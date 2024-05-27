@@ -1,95 +1,224 @@
+// @ts-check
+
 import Image from "next/image";
-import styles from "./page.module.css";
+import Link from 'next/link'
 
 export default function Home() {
-  return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+
+  const data = [
+    {
+      "id": 1,
+      "name": "Activities",
+      "emoji": null,
+      "subcategories": [
+        {
+          "id": 2,
+          "name": "Summer",
+          "emoji": "\u2600\ufe0f",
+          "subcategories": [],
+          "category_type_id": null,
+          "deleted_at": null,
+          "parent_id": 1
+        },
+        {
+          "id": 3,
+          "name": "Winter",
+          "emoji": "\u2744\ufe0f",
+          "subcategories": [],
+          "category_type_id": null,
+          "deleted_at": null,
+          "parent_id": 1
+        }
+      ],
+      "category_type_id": null,
+      "deleted_at": null,
+      "parent_id": null
+    },
+    {
+      "id": 4,
+      "name": "Media",
+      "emoji": null,
+      "subcategories": [
+        {
+          "id": 5,
+          "name": "Movies",
+          "emoji": "\ud83c\udfac",
+          "subcategories": [],
+          "category_type_id": 1,
+          "deleted_at": null,
+          "parent_id": 4
+        },
+        {
+          "id": 6,
+          "name": "Series",
+          "emoji": "\ud83d\udcfa",
+          "subcategories": [],
+          "category_type_id": 1,
+          "deleted_at": null,
+          "parent_id": 4
+        },
+        {
+          "id": 7,
+          "name": "Games",
+          "emoji": "\ud83c\udfae",
+          "subcategories": [],
+          "category_type_id": null,
+          "deleted_at": null,
+          "parent_id": 4
+        },
+        {
+          "id": 8,
+          "name": "Books",
+          "emoji": "\ud83d\udcd8",
+          "subcategories": [],
+          "category_type_id": null,
+          "deleted_at": null,
+          "parent_id": 4
+        }
+      ],
+      "category_type_id": null,
+      "deleted_at": null,
+      "parent_id": null
+    },
+    {
+      "id": 9,
+      "name": "Food",
+      "emoji": null,
+      "subcategories": [
+        {
+          "id": 10,
+          "name": "Restaurants ZH",
+          "emoji": "\ud83c\udf7d\ufe0f",
+          "subcategories": [],
+          "category_type_id": null,
+          "deleted_at": null,
+          "parent_id": 9
+        },
+        {
+          "id": 11,
+          "name": "Restaurants Elsewhere",
+          "emoji": "\ud83c\udf5c",
+          "subcategories": [],
+          "category_type_id": null,
+          "deleted_at": null,
+          "parent_id": 9
+        },
+        {
+          "id": 12,
+          "name": "Recipes",
+          "emoji": "\ud83d\udcc4",
+          "subcategories": [],
+          "category_type_id": null,
+          "deleted_at": null,
+          "parent_id": 9
+        },
+        {
+          "id": 13,
+          "name": "Cooking \/ Baking Ideas",
+          "emoji": "\ud83e\udd50",
+          "subcategories": [],
+          "category_type_id": null,
+          "deleted_at": null,
+          "parent_id": 9
+        }
+      ],
+      "category_type_id": null,
+      "deleted_at": null,
+      "parent_id": null
+    },
+    {
+      "id": 14,
+      "name": "Projects",
+      "emoji": null,
+      "subcategories": [
+        {
+          "id": 15,
+          "name": "General",
+          "emoji": "\ud83e\ude9a",
+          "subcategories": [],
+          "category_type_id": null,
+          "deleted_at": null,
+          "parent_id": 14
+        },
+        {
+          "id": 16,
+          "name": "Programming",
+          "emoji": "\ud83d\udcbb",
+          "subcategories": [],
+          "category_type_id": null,
+          "deleted_at": null,
+          "parent_id": 14
+        }
+      ],
+      "category_type_id": null,
+      "deleted_at": null,
+      "parent_id": null
+    },
+    {
+      "id": 17,
+      "name": "Other",
+      "emoji": null,
+      "subcategories": [
+        {
+          "id": 18,
+          "name": "Gift-Ideas",
+          "emoji": "\ud83c\udf81",
+          "subcategories": [],
+          "category_type_id": null,
+          "deleted_at": null,
+          "parent_id": 17
+        },
+        {
+          "id": 19,
+          "name": "Miscellaneous",
+          "emoji": "\u2728",
+          "subcategories": [],
+          "category_type_id": null,
+          "deleted_at": null,
+          "parent_id": 17
+        }
+      ],
+      "category_type_id": null,
+      "deleted_at": null,
+      "parent_id": null
+    }
+  ]
+
+  const categories = data.map((category) =>
+    <>
+      <div key={category.id} className="category categoriesTitle">
+        <div className="content">
+          <h2>{category.name}</h2>
         </div>
       </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
+      <div className="subcategoriesWrapper">
+        <div className="subcategories">
+          {category.subcategories.map((subcategory) =>
+            <div key={subcategory.id} className="category">
+              <div className="content">
+                <Link href={`/category/${subcategory.id}`} className="link">
+                  <span className="emoji">
+                    <span className="icon">
+                      {subcategory.emoji}
+                    </span>
+                  </span>
+                  <span className="title">
+                    <span className="titleContent">
+                      {subcategory.name}
+                    </span>
+                  </span>
+                </Link>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
+    </>
+  )
 
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+  return (
+    <div className="categoriesWrapper">
+      {categories}
+    </div>
   );
 }
