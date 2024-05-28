@@ -2,33 +2,20 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import getCategories from './libs/getCategories'
+import CategoryActions from './components/CategoryActions'
 
 export default function Home() {
 
 // TODO: move into components?
 
-  interface Category {
-    id: number
-    name: string
-    emoji: string
-    subcategories: Category[]
-  }
-
   const [categories, setCategories] = useState<Category[]>([])
-  const [editMode, setEditMode] = useState(false)
+  const [editMode, setEditMode] = useState(true)
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch('http://localhost/better-list-app/public/api/category');
-        const result = await response.json();
-        setCategories(result.data);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
-    fetchData();
+    getCategories().then((categories: any) => {
+      setCategories(categories.data)
+    })
   }, []);
 
   const categoriesList = categories.map((category) =>
@@ -37,6 +24,7 @@ export default function Home() {
         <div className="content">
           <h2>{category.name}</h2>
         </div>
+        <CategoryActions category={category} className={`${editMode ? 'visible' : ''}`} />
       </div>
       <div className="subcategoriesWrapper">
         <div className="subcategories">
@@ -64,7 +52,7 @@ export default function Home() {
   )
 
   return (
-    <div className={`categoriesWrapper ${editMode ? 'editMode' : ''}`}>
+    <div className={`categoriesWrapper ${editMode ? 'reorder' : ''}`}>
       {categoriesList}
     </div>
   );
