@@ -1,5 +1,7 @@
+const baseUrl = 'http://localhost/better-list-app/public/api' // Move to .env
+
 export async function getCategories() : Promise<Category[]> {
-    const response = await fetch('http://localhost/better-list-app/public/api/category');
+    const response = await fetch(`${baseUrl}/category`);
 
     if (!response.ok) {
         throw new Error('Error fetching data');
@@ -9,7 +11,7 @@ export async function getCategories() : Promise<Category[]> {
 }
 
 export async function getCategory(id?: string) : Promise<Category> {
-    const response = await fetch(`http://localhost/better-list-app/public/api/category/${id}?withEntries=true`);
+    const response = await fetch(`${baseUrl}/category/${id}?withEntries=true`);
 
     if (!response.ok) {
         throw new Error('Error fetching data');
@@ -19,7 +21,7 @@ export async function getCategory(id?: string) : Promise<Category> {
 }
 
 export async function getCategoryTypes() : Promise<CategoryType[]> {
-    const response = await fetch('http://localhost/better-list-app/public/api/category/types');
+    const response = await fetch(`${baseUrl}/category/types`);
 
     if (!response.ok) {
         throw new Error('Error fetching data');

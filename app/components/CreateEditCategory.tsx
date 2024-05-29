@@ -22,7 +22,7 @@ export default function CreateEditCategory(props: Props) {
     const [categoryTypes, setCategoryTypes] = useState<CategoryType[]>([])
 
     const submitCategory = async (formData: FormData) => {
-        console.log(formData)
+        console.log(formData.get('emoji'), formData.get('name'), formData.get('parent_id'), formData.get('category_type_id'))
     }
 
     useEffect(() => {
@@ -67,7 +67,7 @@ export default function CreateEditCategory(props: Props) {
                 <select name="parent_id" v-model="category.parent_id">
                     <option>No Category</option>
                     {categories.map((c: Category) => (
-                        <option key={c.id} value={c.id}>{c.name}</option>
+                        <option key={c.id} value={c.id} selected={c.id == category.parent_id}>{c.name}</option>
                     ))}
                 </select>
             </label>
@@ -78,7 +78,7 @@ export default function CreateEditCategory(props: Props) {
                 <select name="category_type_id" v-model="category.category_type_id">
                     <option>No Type</option>
                     {categoryTypes.map((c: CategoryType) => (
-                        <option key={c.id} value={c.id}>{c.name}</option>
+                        <option key={c.id} value={c.id} selected={c.id == category.category_type_id}>{c.name}</option>
                     ))}
                 </select>
             </label>
