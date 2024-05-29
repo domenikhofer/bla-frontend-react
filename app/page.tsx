@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import getCategories from './libs/getCategories'
-import CategoryActions from './components/CategoryActions'
+import { getCategories } from '@/app/libs/categoryModel'
+import CategoryActions from '@/app/components/CategoryActions'
 import plantTop from '/public/images/plantTop.png'
 import plantSide from '/public/images/plantSide.png'
 import plantBottom from '/public/images/plantBottom.png'
@@ -16,10 +16,12 @@ export default function Home() {
   const [showEditBtn, setShowEditBtn] = useState(false)
 
   useEffect(() => {
-    getCategories().then((categories: any) => {
-      setCategories(categories.data)
+    getCategories().then((c: any) => {
+      setCategories(c.data)
     })
   }, []);
+
+  // TODO: add caching
 
   const categoriesList = categories.map((category: Category) =>
     <>
@@ -88,3 +90,4 @@ export default function Home() {
     </>
   );
 }
+// TODO: continue with edit and add

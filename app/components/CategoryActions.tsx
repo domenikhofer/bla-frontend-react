@@ -1,13 +1,10 @@
 import Link from 'next/link'
 import { useState } from 'react'
 import { CSSTransition } from 'react-transition-group'
-import Modal from './Modal'
+import Modal from '@/app/components/Modal'
 
 interface Props {
-    category: {
-        id: number,
-        name: string
-    },
+    category: Category,
     className: string
 }
 

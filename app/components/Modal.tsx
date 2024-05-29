@@ -6,7 +6,6 @@ interface Props {
     categoryName: string
 }
 
-// TODO: add Name of Category
 export default function Modal(props : Props) {
     return createPortal (
         <div className="modal">
