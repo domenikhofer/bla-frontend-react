@@ -1,91 +1,120 @@
-'use client'
+"use client";
 
-import Link from 'next/link'
-import { useEffect, useState } from 'react'
-import { getCategories, getCategory, getCategoryTypes } from '@/app/libs/categoryModel'
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import * as CategoryModel from "@/app/libs/categoryModel";
+import { redirect } from "next/navigation";
 
 interface Props {
-    type: string
-    categoryId?: string
+  type: string;
+  categoryId: string;
 }
 
+// TODO: remove type option for main cats
+// TODO: main cat with children can't be given parent
+
 export default function CreateEditCategory(props: Props) {
+  const [category, setCategory] = useState<Category>({
+    emoji: "",
+    name: "",
+    parentId: undefined,
+    categoryType: undefined,
+    subcategories: [],
+  });
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [categoryTypes, setCategoryTypes] = useState<CategoryType[]>([]);
 
-    const [category, setCategory] = useState<Category>({
-        emoji: '',
-        name: '',
-        parent_id: null,
-        category_type_id: null,
-        subcategories: []
-    })
-    const [categories, setCategories] = useState<Category[]>([])
-    const [categoryTypes, setCategoryTypes] = useState<CategoryType[]>([])
-
-    const submitCategory = async (formData: FormData) => {
-        console.log(formData.get('emoji'), formData.get('name'), formData.get('parent_id'), formData.get('category_type_id'))
+  const submitCategory = async (formData: FormData) => {
+    if (props.type === "create") {
+      await CategoryModel.createCategory(formData);
+      redirect("/");
     }
+    await CategoryModel.updateCategory(props.categoryId, formData); // TODO: work with offline model and update state
+    redirect("/");
+  };
+  useEffect(() => {
+    CategoryModel.getCategories().then((c: Category[]) => {
+      setCategories(c);
+    });
+    CategoryModel.getCategoryTypes().then((ct: CategoryType[]) => {
+      setCategoryTypes(ct);
+    });
+    if (props.type === "edit") {
+      CategoryModel.getCategory(props.categoryId, false).then((c: Category) => {
+        setCategory(c);
+      });
+    }
+  }, []);
 
-    useEffect(() => {
-        getCategories().then((c: any) => {
-            setCategories(c.data)
-        })
-        getCategoryTypes().then((ct: any) => {
-            setCategoryTypes(ct.data)
-        })
-        if (props.type === 'edit') {
-            getCategory(props.categoryId).then((c: any) => {
-                setCategory(c.data)
-            })
-        }
-    }, []);
-
-
-    return (
-        <form action={submitCategory}>
-            {
-                props.type === 'edit' ?
-                    <h2>Edit Category</h2>
-                    :
-                    <h2>Create Category</h2>
-            }
-            <label>
-                <div className="label">
-                    Emoji
-                </div>
-                <input type="text" name="emoji" maxLength={2} placeholder="" value={category.emoji} />
-            </label>
-            <label>
-                <div className="label">
-                    Name
-                </div>
-                <input type="text" name="name" placeholder="" value={category.name} />
-            </label>
-            <label>
-                <div className="label">
-                    Parent Category
-                </div>
-                <select name="parent_id" v-model="category.parent_id">
-                    <option>No Category</option>
-                    {categories.map((c: Category) => (
-                        <option key={c.id} value={c.id} selected={c.id == category.parent_id}>{c.name}</option>
-                    ))}
-                </select>
-            </label>
-            <label>
-                <div className="label">
-                    Category Type
-                </div>
-                <select name="category_type_id" v-model="category.category_type_id">
-                    <option>No Type</option>
-                    {categoryTypes.map((c: CategoryType) => (
-                        <option key={c.id} value={c.id} selected={c.id == category.category_type_id}>{c.name}</option>
-                    ))}
-                </select>
-            </label>
-            <div className="formActions">
-                <button type="submit">✔️</button>
-                <Link href="/" className="button">✖️</Link>
-            </div>
-        </form>
-    )
+  return (
+    <form action={submitCategory}>
+      {props.type === "edit" ? (
+        <h2>Edit Category</h2>
+      ) : (
+        <h2>Create Category</h2>
+      )}
+      <label>
+        <div className="label">Emoji</div>
+        <input
+          type="text"
+          name="emoji"
+          maxLength={2}
+          placeholder=""
+          defaultValue={category.emoji}
+        />
+      </label>
+      <label>
+        <div className="label">Name</div>
+        <input
+          type="text"
+          name="name"
+          placeholder=""
+          defaultValue={category.name}
+        />
+      </label>
+      <label>
+        <div className="label">Parent Category</div>
+        <select
+          name="parentId"
+          value={category.parentId}
+          onChange={(e) => {
+            setCategory({ ...category, parentId: parseInt(e.target.value) });
+          }}
+        >
+          <option value="">No Category</option>
+          {categories.map((c: Category) => (
+            <option key={c.id} value={c.id}>
+              {c.name}
+            </option>
+          ))}
+        </select>
+      </label>
+      <label>
+        <div className="label">Category Type</div>
+        <select
+          name="categoryTypeId"
+          value={category.categoryType?.id}
+          onChange={(e) => {
+            setCategory({
+              ...category,
+              categoryType: { id: parseInt(e.target.value) },
+            });
+          }}
+        >
+          <option value="">No Type</option>
+          {categoryTypes.map((c: CategoryType) => (
+            <option key={c.id} value={c.id}>
+              {c.name}
+            </option>
+          ))}
+        </select>
+      </label>
+      <div className="formActions">
+        <button type="submit">✔️</button>
+        <Link href="/" className="button">
+          ✖️
+        </Link>
+      </div>
+    </form>
+  );
 }

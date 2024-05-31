@@ -1,4 +1,4 @@
-const baseUrl = 'http://localhost/better-list-app/public/api' // Move to .env
+const baseUrl = 'http://localhost:5173/api' // Move to .env
 
 export async function getCategories() : Promise<Category[]> {
     const response = await fetch(`${baseUrl}/category`);
@@ -10,8 +10,8 @@ export async function getCategories() : Promise<Category[]> {
     return await response.json();
 }
 
-export async function getCategory(id?: string) : Promise<Category> {
-    const response = await fetch(`${baseUrl}/category/${id}?withEntries=true`);
+export async function getCategory(id?: string, withEntries? : Boolean) : Promise<Category> {
+    const response = await fetch(`${baseUrl}/category/${id}?withEntries=${withEntries}`);
 
     if (!response.ok) {
         throw new Error('Error fetching data');
@@ -29,3 +29,38 @@ export async function getCategoryTypes() : Promise<CategoryType[]> {
 
     return await response.json();
 }
+
+export async function createCategory(formData: FormData) {
+    const response = await fetch(`${baseUrl}/category`, {
+        method: 'POST',
+        body: formData
+    });
+
+    if (!response.ok) {
+        throw new Error('Error fetching data');
+    }
+}
+
+export async function updateCategory(id: string, formData: FormData) {
+    const response = await fetch(`${baseUrl}/category/${id}`, {
+        method: 'PUT',
+        body: formData
+    });
+
+    if (!response.ok) {
+        throw new Error('Error fetching data');
+    }
+}
+
+export async function deleteCategory(id?: number) {
+    const response = await fetch(`${baseUrl}/category/${id}`, {
+        method: 'DELETE'
+    });
+
+    if (!response.ok) {
+        throw new Error('Error fetching data');
+    }
+}
+
+// TODO: testing?
+// TODO: offline mode?

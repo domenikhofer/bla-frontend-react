@@ -196,7 +196,7 @@ select {
   height: var(--elementHeight);
   opacity: 1;
 
-  &.deleted {
+  &.exit {
       height: 0;
       scale: 1 0;
       opacity: 0;

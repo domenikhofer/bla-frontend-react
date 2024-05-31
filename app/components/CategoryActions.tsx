@@ -2,10 +2,13 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { CSSTransition } from 'react-transition-group'
 import Modal from '@/app/components/Modal'
+import * as CategoryModel from '@/app/libs/categoryModel'
 
 interface Props {
     category: Category,
-    className: string
+    className: string,
+    categories: Category[],
+    setCategories: Function
 }
 
 export default function CategoryActions(props: Props) {
@@ -17,8 +20,11 @@ export default function CategoryActions(props: Props) {
     }
 
     const deleteCategory = async () => {
-        console.log('delete category', props.category.id);
-        //TODO : finish delete logic
+        await CategoryModel.deleteCategory(props.category.id)
+        // TODO: consistent semi colons
+        await CategoryModel.getCategories().then((c: Category[]) => {
+            props.setCategories(c)
+        })
         setShowModal(false);
     }
 

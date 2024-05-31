@@ -1,3 +1,5 @@
+import CreateEditCategory from "@/app/components/CreateEditCategory";
+
 export default function Page() {
-    return <div>Create Category</div>
+    return <CreateEditCategory type="create" categoryId="" />
   }
