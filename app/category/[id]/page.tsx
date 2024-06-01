@@ -1,3 +1,208 @@
-export default function Page({ params }: { params: { id: string } }) {
-    return <div>My Category: {params.id}</div>
-  }
+"use client";
+
+import Link from "next/link";
+import { useRef, useEffect, useState, useCallback } from "react";
+import * as CategoryModel from "@/app/libs/categoryModel";
+import * as EntryModel from "@/app/libs/entryModel";
+import { redirect } from "next/navigation";
+
+interface Params {
+  params: {
+    id: string;
+  };
+}
+
+export default function Page({ params }: Params) {
+  const [category, setCategory] = useState<Category>(); // Default Value?
+  const [entries, setEntries] = useState<Entry[]>([]); // Default Value?
+  const [similarEntries, setSimilarEntries] = useState<Entry[]>([]);
+  const [justSaved, setJustSaved] = useState(false);
+  const [activeEntry, setActiveEntry] = useState<Entry>();
+  const entryRefs = useRef([]);
+
+  useEffect(() => {
+    CategoryModel.getCategory(params.id, true).then((c: Category) => {
+      setCategory(c);
+      if (c.entries) {
+        setEntries(c.entries);
+      } else {
+        setEntries([
+          {
+            value: "First Entry",
+            id: new Date().getTime(),
+            url: "",
+            image: "",
+            categoryId: c.id,
+          },
+        ]);
+      }
+    });
+  }, []);
+
+  const focusEntry = (entry: Entry) => {
+    setActiveEntry(entry);
+    setSimilarEntries([]);
+  };
+
+  const refCallback = useCallback((element) => {
+    entryRefs.current.push(element);
+    if(element?.dataset.new == 'true') {
+      element.click();
+      element.focus();
+    }
+  }, []);
+
+  const manipulateEntry = async (e: any, entry: Entry) => {
+    
+    if (e.key == 'Enter') {
+      e.preventDefault();
+      setSimilarEntries([]);
+      const entryIndex = entries.indexOf(entry) + 1;
+      const newElement = {
+        value: "",
+        id: new Date().getTime(),
+        url: "",
+        image: "",
+        categoryId: category?.id,
+        new: true,
+      }
+      setEntries([...entries.slice(0, entryIndex), newElement, ...entries.slice(entryIndex)]);
+    }
+    
+    if(e.key == 'Backspace' && entry.value == '') {
+      e.preventDefault();
+      const entryIndex = entries.indexOf(entry);
+      setEntries(entries.filter(e => e.id !== entry.id));
+      const entryRef = entryRefs.current.find( e => e?.dataset.id == entries[entryIndex - 1].id)
+      entryRef.click();
+      entryRef.focus();
+      setSimilarEntries([]);
+    }
+}
+
+  const saveEntries = async () => {
+    console.log(entries);
+    await EntryModel.createEntries(entries);
+    setJustSaved(true);
+    setTimeout(() => {
+      setJustSaved(false);
+    }, 1000);
+  };
+
+  const findSimilarEntries = async (query: string) => {
+    if (query.length >= 3) {
+        const response = await EntryModel.getSimilarEntries(query, category?.id)
+       setSimilarEntries(response);
+    } else {
+        setSimilarEntries([]);
+    }
+}
+
+  const webSearch = () => {
+    window.open(
+      "https://www.google.com/search?q=" + activeEntry?.value.trim(),
+      "_blank"
+    );
+  };
+
+  return (
+    <>
+      <div className="entriesWrapper" data-category={params.id}>
+        <div className="emoji">{category?.emoji}</div>
+        <div className="header">
+          <h1>{category?.name}</h1>
+        </div>
+        {category?.categoryType == null ? (
+          <div className="entryWrapper">
+            {entries.map((entry, index) => (
+              <div
+                key={entry.id}
+                className={`entry ${
+                  activeEntry?.id == entry.id ? "active" : ""
+                }`}
+              >
+                <input
+                  className="title"
+                  data-new={entry.new}
+                  data-id={entry.id}
+                  onKeyUp={(e) => findSimilarEntries(e.target.value)}
+                  onKeyDown={(e) => manipulateEntry(e, entry)}
+                  onClick={() => focusEntry(entry)}
+                  spellCheck="false"
+                  defaultValue={entry.value}
+                  ref={refCallback}
+                  onChange={(e) => {
+                    entry.value = e.target.value;
+                    setEntries([...entries]);
+                  }}
+                />
+                <div className="actions">
+                  <a onClick={webSearch} className="link" target="_blank">
+                    🔍
+                  </a>
+                </div>
+                <div className="similar">
+                  <div className="label">Existing Entries</div>
+                  {similarEntries.length ? (
+                    <div className="results" v-if="data.similarEntries.length">
+                      {similarEntries.map((se) => (
+                        <div key={se.id}>{se.value}</div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="results">
+                      <div>No similar entries found</div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <>
+            <div className="imageEntryWrapper">
+              {category?.entries.map((entry) => (
+                <Link
+                  key={entry.id}
+                  className="entry"
+                  href={`/entry/${entry.id}`}
+                  data-onclick="entriesStore.activeEntryId = entry.id"
+                >
+                  <span className="image">
+                    <img
+                      src="`https://image.tmdb.org/t/p/w500/${entry.image}`"
+                      alt=""
+                      className="{active: entriesStore.activeEntryId === entry.id }"
+                    />
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+
+      <div className="pageActions fixed">
+        <Link href="/" className="button">
+          ⬅️
+        </Link>
+        {category?.categoryType == null ? (
+          <div
+            className="button saveEntries"
+            data-category="category.id"
+            onClick={saveEntries}
+          >
+            {justSaved ? "✅" : "💾"}
+          </div>
+        ) : (
+          <Link
+            href="`/entry/create/${categoryId}`"
+            className="button addEntry"
+          >
+            ➕
+          </Link>
+        )}
+      </div>
+    </>
+  );
+}
