@@ -1,10 +1,11 @@
 "use client";
 
-import Link from "next/link";
-import { useRef, useEffect, useState, useCallback } from "react";
+import { Link } from 'next-view-transitions'
+import { useRef, useEffect, useLayoutEffect, useState, useCallback } from "react";
 import * as CategoryModel from "@/app/libs/categoryModel";
 import * as EntryModel from "@/app/libs/entryModel";
-import { redirect } from "next/navigation";
+import { useSearchParams } from 'next/navigation'
+
 
 interface Params {
   params: {
@@ -19,8 +20,11 @@ export default function Page({ params }: Params) {
   const [justSaved, setJustSaved] = useState(false);
   const [activeEntry, setActiveEntry] = useState<Entry>();
   const entryRefs = useRef([]);
-
+  const searchParams = useSearchParams()
+  const lastEntryId = searchParams.get('backFrom')
+  
   useEffect(() => {
+   
     CategoryModel.getCategory(params.id, true).then((c: Category) => {
       setCategory(c);
       if (c.entries) {
@@ -38,7 +42,8 @@ export default function Page({ params }: Params) {
       }
     });
   }, []);
-
+  
+  
   const focusEntry = (entry: Entry) => {
     setActiveEntry(entry);
     setSimilarEntries([]);
@@ -144,16 +149,12 @@ export default function Page({ params }: Params) {
                 <div className="similar">
                   <div className="label">Existing Entries</div>
                   {similarEntries.length ? (
-                    <div className="results" v-if="data.similarEntries.length">
+                    <div className="results">
                       {similarEntries.map((se) => (
                         <div key={se.id}>{se.value}</div>
                       ))}
                     </div>
-                  ) : (
-                    <div className="results">
-                      <div>No similar entries found</div>
-                    </div>
-                  )}
+                  ) : null}
                 </div>
               </div>
             ))}
@@ -166,13 +167,13 @@ export default function Page({ params }: Params) {
                   key={entry.id}
                   className="entry"
                   href={`/entry/${entry.id}`}
-                  data-onclick="entriesStore.activeEntryId = entry.id"
+                  onClick={() => setActiveEntry(entry)}
                 >
                   <span className="image">
                     <img
-                      src="`https://image.tmdb.org/t/p/w500/${entry.image}`"
+                      src={`https://image.tmdb.org/t/p/w500/${entry.image}`}
                       alt=""
-                      className="{active: entriesStore.activeEntryId === entry.id }"
+                      className={activeEntry?.id === entry.id ? "active" : ""}
                     />
                   </span>
                 </Link>

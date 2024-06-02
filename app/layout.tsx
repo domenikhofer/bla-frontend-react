@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ViewTransitions } from "next-view-transitions";
 import { Quicksand } from "next/font/google";
 import "./globals.css";
 
@@ -15,12 +16,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning={true}>
-      <body className={quicksand.className}>
-        <div className="container">
-          {children}
-        </div>
-      </body>
-    </html>
+    <ViewTransitions>
+      <html lang="en" suppressHydrationWarning={true}>
+        <body className={quicksand.className}>
+          <div className="container">{children}</div>
+        </body>
+      </html>
+    </ViewTransitions>
   );
 }

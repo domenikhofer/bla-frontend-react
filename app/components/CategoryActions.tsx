@@ -39,7 +39,7 @@ export default function CategoryActions(props: Props) {
                 timeout={200}
                 unmountOnExit
             >
-                <Modal onClose={() => setShowModal(false)} onDelete={() => deleteCategory()} categoryName={props.category.name}  />
+                <Modal onClose={() => setShowModal(false)} onDelete={() => deleteCategory()} itemName={props.category.name} type="category"  />
             </CSSTransition>
 
         </>

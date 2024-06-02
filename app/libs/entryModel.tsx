@@ -14,6 +14,16 @@ export async function createEntries(entries: Entry[]) {
     }
 }
 
+export async function getEntry(id?: string) : Promise<Entry> {
+    const response = await fetch(`${baseUrl}/entry/${id}`);
+
+    if (!response.ok) {
+        throw new Error('Error fetching data');
+    }
+
+    return await response.json();
+}
+
 export async function getSimilarEntries(query: string, categoryId?: number) {
     const response = await fetch(`${baseUrl}/entry/search/${categoryId}/${encodeURIComponent(query)}`);
 
@@ -22,4 +32,16 @@ export async function getSimilarEntries(query: string, categoryId?: number) {
     }
 
     return await response.json();
+}
+
+export async function deleteEntry(id?: number) {
+    const response = await fetch(`${baseUrl}/entry/${id}`, {
+        method: 'DELETE'
+    });
+
+    // TODO: actually Delete entry in Backend
+
+    if (!response.ok) {
+        throw new Error('Error fetching data');
+    }
 }
