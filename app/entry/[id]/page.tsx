@@ -41,7 +41,9 @@ export default function Page({ params }: Params) {
       setTimeout(() => {
         const categoryId = entry?.category.id;
         EntryModel.deleteEntry(entry?.id).then(() => {
+          document.startViewTransition(() => {
           router.push(`/category/${categoryId}`);
+          });
         });
         }, 3000);
     }, 3000);
@@ -89,9 +91,9 @@ export default function Page({ params }: Params) {
           <div className="button" onClick={openModal}>
             🗑️
           </div>
-          <div className="button" onClick={updateEntry}>
+          {/* <div className="button" onClick={updateEntry}>
             {entry?.done ? "✅" : "🟩"}
-          </div>
+          </div> */}
         </div>
       </div>
       <CSSTransition

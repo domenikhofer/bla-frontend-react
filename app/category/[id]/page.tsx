@@ -1,7 +1,7 @@
 "use client";
 
 import { Link } from 'next-view-transitions'
-import { useRef, useEffect, useLayoutEffect, useState, useCallback } from "react";
+import { useRef, useEffect, useState, useCallback } from "react";
 import * as CategoryModel from "@/app/libs/categoryModel";
 import * as EntryModel from "@/app/libs/entryModel";
 import { useSearchParams } from 'next/navigation'
@@ -197,7 +197,7 @@ export default function Page({ params }: Params) {
           </div>
         ) : (
           <Link
-            href="`/entry/create/${categoryId}`"
+            href={`/entry/create/${category.id}`}
             className="button addEntry"
           >
             ➕

@@ -240,7 +240,8 @@ select {
   z-index: 1;
 }
 
-.pageActions.fixed {
+.pageActions.fixed,
+.formActions.fixed {
   position: fixed;
   z-index: 1;
   bottom: var(--gap);
@@ -536,6 +537,7 @@ select {
     overflow: hidden;
     border: 1px solid transparent;
     transition: var(--transition);
+    aspect-ratio: 2 / 3;
 
     &.selected {
       border: 1px solid var(--fontColorMain);
