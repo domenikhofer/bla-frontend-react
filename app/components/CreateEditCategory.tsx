@@ -10,9 +10,6 @@ interface Props {
   categoryId: string;
 }
 
-// TODO: remove type option for main cats
-// TODO: main cat with children can't be given parent
-
 export default function CreateEditCategory(props: Props) {
   const [category, setCategory] = useState<Category>({
     emoji: "",
@@ -21,6 +18,7 @@ export default function CreateEditCategory(props: Props) {
     categoryType: undefined,
     subcategories: [],
   });
+  const [hasChildren, setHasChildren] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [categoryTypes, setCategoryTypes] = useState<CategoryType[]>([]);
 
@@ -29,19 +27,22 @@ export default function CreateEditCategory(props: Props) {
       await CategoryModel.createCategory(formData);
       redirect("/");
     }
-    await CategoryModel.updateCategory(props.categoryId, formData); // TODO: work with offline model and update state
+    await CategoryModel.updateCategory(props.categoryId, formData);
     redirect("/");
   };
   useEffect(() => {
     CategoryModel.getCategories().then((c: Category[]) => {
       setCategories(c);
-    });
+    })
     CategoryModel.getCategoryTypes().then((ct: CategoryType[]) => {
       setCategoryTypes(ct);
     });
     if (props.type === "edit") {
       CategoryModel.getCategory(props.categoryId, false).then((c: Category) => {
         setCategory(c);
+        if (c.subcategories.length > 0) {
+          setHasChildren(true);
+        }
       });
     }
   }, []);
@@ -53,16 +54,18 @@ export default function CreateEditCategory(props: Props) {
       ) : (
         <h2>Create Category</h2>
       )}
-      <label>
-        <div className="label">Emoji</div>
-        <input
-          type="text"
-          name="emoji"
-          maxLength={2}
-          placeholder=""
-          defaultValue={category.emoji}
-        />
-      </label>
+      {!hasChildren && (
+        <label>
+          <div className="label">Emoji</div>
+          <input
+            type="text"
+            name="emoji"
+            maxLength={2}
+            placeholder=""
+            defaultValue={category.emoji}
+          />
+        </label>
+      )}
       <label>
         <div className="label">Name</div>
         <input
@@ -72,6 +75,7 @@ export default function CreateEditCategory(props: Props) {
           defaultValue={category.name}
         />
       </label>
+      {!hasChildren && (
       <label>
         <div className="label">Parent Category</div>
         <select
@@ -89,6 +93,7 @@ export default function CreateEditCategory(props: Props) {
           ))}
         </select>
       </label>
+      )}
       <label>
         <div className="label">Category Type</div>
         <select

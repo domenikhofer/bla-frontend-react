@@ -5,7 +5,7 @@ export async function getCategories() : Promise<Category[]> {
 
     if (!response.ok) {
         throw new Error('Error fetching data');
-    } // TODO: add error handling
+    }
 
     return await response.json();
 }
@@ -61,6 +61,3 @@ export async function deleteCategory(id?: number) {
         throw new Error('Error fetching data');
     }
 }
-
-// TODO: testing?
-// TODO: offline mode?

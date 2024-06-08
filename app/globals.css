@@ -78,6 +78,10 @@ button,
   &:active {
     background-color: var(--lightBlue);
   }
+
+  &.invisible {
+    visibility: hidden;
+  }
 }
 
 label {

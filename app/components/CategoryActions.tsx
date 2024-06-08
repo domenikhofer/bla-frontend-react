@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import { Link } from "next-view-transitions";
 import { useState } from 'react'
 import { CSSTransition } from 'react-transition-group'
 import Modal from '@/app/components/Modal'
@@ -21,7 +21,6 @@ export default function CategoryActions(props: Props) {
 
     const deleteCategory = async () => {
         await CategoryModel.deleteCategory(props.category.id)
-        // TODO: consistent semi colons
         await CategoryModel.getCategories().then((c: Category[]) => {
             props.setCategories(c)
         })
@@ -32,7 +31,7 @@ export default function CategoryActions(props: Props) {
         <>
             <div className={`actions ${props.className}`}>
                 <Link href={`/category/edit/${props.category.id}`} className="button">✏️</Link>
-                <div className="button" onClick={openModal}>🗑️</div>
+                <div className={`button ${props.category.subcategories != null && props.category.subcategories.length != 0 ? 'invisible' : ''}`} onClick={openModal}>🗑️</div>
             </div >
             <CSSTransition
                 in={showModal}

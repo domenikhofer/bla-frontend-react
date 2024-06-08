@@ -5,7 +5,7 @@ interface Category {
     parentId?: number
     categoryType?: CategoryType
     subcategories: Category[]
-    entries: Entry[]
+    entries?: Entry[]
 }
 
 interface CategoryType {
@@ -14,9 +14,14 @@ interface CategoryType {
 }
 
 interface Entry {
-    id: number
+    id: number|string
     value: string
     categoryId?: number
     url: string
     image: string
+    new?: boolean
+    category?: {
+        id: string;
+        emoji: string;
+      };
 }

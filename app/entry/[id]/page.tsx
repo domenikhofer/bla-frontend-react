@@ -7,8 +7,6 @@ import { CSSTransition } from 'react-transition-group'
 import Modal from '@/app/components/Modal'
 import { useRouter } from "next/navigation";
 
-
-
 interface Params {
   params: {
     id: string;
@@ -24,9 +22,9 @@ export default function Page({ params }: Params) {
 
 
   useEffect(() => {
-    EntryModel.getEntry(params.id).then((e: Entry) => {
-      setEntry(e);
-    });
+      EntryModel.getEntry(params.id).then((e) => {
+        setEntry(e);
+      })
   }, []);
 
   const openModal = async () => {
@@ -39,11 +37,9 @@ export default function Page({ params }: Params) {
     setTimeout(() => {
       setDeletionState("shredded done");
       setTimeout(() => {
-        const categoryId = entry?.category.id;
+        const categoryId = entry?.category?.id;
         EntryModel.deleteEntry(entry?.id).then(() => {
-          document.startViewTransition(() => {
           router.push(`/category/${categoryId}`);
-          });
         });
         }, 3000);
     }, 3000);
@@ -51,12 +47,9 @@ export default function Page({ params }: Params) {
 
   const updateEntry = async () => {};
 
-  // TODO: use react image?
-  // TODO: view transition back to overview
-
   return (
-    <div className="entriesWrapper" data-category={entry?.category.id}>
-      <div className="emoji">{entry?.category.emoji}</div>
+    <div className="entriesWrapper" data-category={entry?.category?.id}>
+      <div className="emoji">{entry?.category?.emoji}</div>
       <div className="header">
         <h1>{entry?.value}</h1>
       </div>
@@ -71,9 +64,11 @@ export default function Page({ params }: Params) {
           <div className="imageShredded">
             {[...Array(10)].map((e, i) => (
               <img
+                key={i}
                 src={`https://image.tmdb.org/t/p/w500/${entry?.image}`}
                 alt=""
                 style={{
+                  // @ts-ignore
                   "--offset": i * 10.1 + "%",
                   "--timeOffset": Math.random() * 0.1 + "s",
                 }}
@@ -82,7 +77,7 @@ export default function Page({ params }: Params) {
           </div>
         </div>
         <div className="pageActions">
-          <Link href={`/category/${entry?.category.id}`} className="button">
+          <Link href={`/category/${entry?.category?.id}`} className="button">
             ⬅️
           </Link>
           <a href={entry?.url} target="_blank" className="button">
@@ -91,9 +86,6 @@ export default function Page({ params }: Params) {
           <div className="button" onClick={openModal}>
             🗑️
           </div>
-          {/* <div className="button" onClick={updateEntry}>
-            {entry?.done ? "✅" : "🟩"}
-          </div> */}
         </div>
       </div>
       <CSSTransition

@@ -14,7 +14,7 @@ export async function createEntries(entries: Entry[]) {
   }
 }
 
-export async function addMovieTVShow(data) {
+export async function addMovieTVShow(data: any) {
   delete data.id;
   const response = await fetch(`${baseUrl}/entry/store-media`, {
     method: "POST",
@@ -51,12 +51,10 @@ export async function getSimilarEntries(query: string, categoryId?: number) {
   return await response.json();
 }
 
-export async function deleteEntry(id?: number) {
+export async function deleteEntry(id: any) {
   const response = await fetch(`${baseUrl}/entry/${id}`, {
     method: "DELETE",
   });
-
-  // TODO: actually Delete entry in Backend
 
   if (!response.ok) {
     throw new Error("Error fetching data");

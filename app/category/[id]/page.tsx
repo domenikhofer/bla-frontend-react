@@ -14,12 +14,12 @@ interface Params {
 }
 
 export default function Page({ params }: Params) {
-  const [category, setCategory] = useState<Category>(); // Default Value?
-  const [entries, setEntries] = useState<Entry[]>([]); // Default Value?
+  const [category, setCategory] = useState<Category>();
+  const [entries, setEntries] = useState<Entry[]>([]); 
   const [similarEntries, setSimilarEntries] = useState<Entry[]>([]);
   const [justSaved, setJustSaved] = useState(false);
   const [activeEntry, setActiveEntry] = useState<Entry>();
-  const entryRefs = useRef([]);
+  const entryRefs = useRef<any>([]);
   const searchParams = useSearchParams()
   const lastEntryId = searchParams.get('backFrom')
   
@@ -27,7 +27,7 @@ export default function Page({ params }: Params) {
    
     CategoryModel.getCategory(params.id, true).then((c: Category) => {
       setCategory(c);
-      if (c.entries) {
+      if (c.entries && c.entries.length > 0) {
         setEntries(c.entries);
       } else {
         setEntries([
@@ -49,7 +49,7 @@ export default function Page({ params }: Params) {
     setSimilarEntries([]);
   };
 
-  const refCallback = useCallback((element) => {
+  const refCallback = useCallback((element: any) => {
     entryRefs.current.push(element);
     if(element?.dataset.new == 'true') {
       element.click();
@@ -78,7 +78,7 @@ export default function Page({ params }: Params) {
       e.preventDefault();
       const entryIndex = entries.indexOf(entry);
       setEntries(entries.filter(e => e.id !== entry.id));
-      const entryRef = entryRefs.current.find( e => e?.dataset.id == entries[entryIndex - 1].id)
+      const entryRef = entryRefs.current.find( (e: any) => e?.dataset.id == entries[entryIndex - 1].id)
       entryRef.click();
       entryRef.focus();
       setSimilarEntries([]);
@@ -86,7 +86,6 @@ export default function Page({ params }: Params) {
 }
 
   const saveEntries = async () => {
-    console.log(entries);
     await EntryModel.createEntries(entries);
     setJustSaved(true);
     setTimeout(() => {
@@ -130,7 +129,7 @@ export default function Page({ params }: Params) {
                   className="title"
                   data-new={entry.new}
                   data-id={entry.id}
-                  onKeyUp={(e) => findSimilarEntries(e.target.value)}
+                  onKeyUp={(e) => findSimilarEntries((e.target as HTMLInputElement).value)}
                   onKeyDown={(e) => manipulateEntry(e, entry)}
                   onClick={() => focusEntry(entry)}
                   spellCheck="false"
@@ -162,7 +161,7 @@ export default function Page({ params }: Params) {
         ) : (
           <>
             <div className="imageEntryWrapper">
-              {category?.entries.map((entry) => (
+              {category?.entries?.map((entry) => (
                 <Link
                   key={entry.id}
                   className="entry"

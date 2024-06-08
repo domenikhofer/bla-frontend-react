@@ -12,13 +12,22 @@ interface Params {
   };
 }
 
+interface MovieTV {
+  id: number;
+  image: string;
+  url: string;
+  value: string;
+  isDone: boolean;
+  categoryId: string;
+}
+
 export default function Page({ params }: Params) {
-  const [movieTV, setMovieTV] = useState({});
+  const [movieTV, setMovieTV] = useState<MovieTV>();
   const [searchResults, setSearchResults] = useState([]);
   const router = useRouter()
 
 
-  const searchMovieTV = async (e) => {
+  const searchMovieTV = async (e: any) => {
     if (e.key == "Enter") {
       e.preventDefault();
       const query = e.target.value;
@@ -27,16 +36,13 @@ export default function Page({ params }: Params) {
     }
   };
 
-  const createMediaEntry = async (e) => {
+  const createMediaEntry = async (e: any) => {
     e.preventDefault();
-    console.log(movieTV);
     await EntryModel.addMovieTVShow(movieTV);
-    document.startViewTransition(() => {
       router.push(`/category/${params.categoryId}`);
-    })
   };
 
-  const selectMovieTV = (entry) => {
+  const selectMovieTV = (entry: any) => {
     setMovieTV({
       id: entry.id,
       image: entry.poster_path,
@@ -46,9 +52,6 @@ export default function Page({ params }: Params) {
       categoryId: params.categoryId,
     });
   };
-
-  // TODO: don't allow empty entries
-  // TODO: dont allow duplicates
 
   return (
     <form onSubmit={(e) => createMediaEntry(e)} method="post">
@@ -63,12 +66,12 @@ export default function Page({ params }: Params) {
         />
       </label>
       <div className="imageEntryWrapper">
-        {searchResults.map((entry) => (
+        {searchResults.map((entry: any) => (
           <div
             key={entry.id}
             onClick={() => selectMovieTV(entry)}
             className={`entry searchResult ${
-              movieTV.id == entry.id ? "selected" : ""
+              movieTV?.id == entry.id ? "selected" : ""
             }`}
           >
             <div className="image">

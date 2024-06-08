@@ -3,7 +3,7 @@ import  { createPortal } from "react-dom"
 interface Props {
     onClose: () => void,
     onDelete: () => void,
-    itemName: string,
+    itemName?: string,
     type: string
 }
 

@@ -1,11 +1,7 @@
 "use client";
-// TODO: Page Transitions (simple fade or later more elaborate)
-// TODO: Splash screen
-// TODO: add caching
-// TODO: Transition for deleting entire categories
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
+import { Link } from "next-view-transitions";
 import Image from "next/image";
 import { getCategories } from "@/app/libs/categoryModel";
 import CategoryActions from "@/app/components/CategoryActions";
