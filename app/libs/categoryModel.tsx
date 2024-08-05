@@ -1,4 +1,4 @@
-const baseUrl = 'http://localhost/better-list-app/bla/public/api' // Move to .env
+const baseUrl = 'https://domenik.ch/bla-backend/public/api' // Move to .env
 
 export async function getCategories() : Promise<Category[]> {
     const response = await fetch(`${baseUrl}/category`);

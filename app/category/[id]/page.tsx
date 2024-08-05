@@ -116,7 +116,7 @@ export default function Page({ params }: Params) {
         <div className="header">
           <h1>{category?.name}</h1>
         </div>
-        {category?.category_type == null ? (
+        {category?.category_type_id == null ? (
           <div className="entryWrapper">
             {entries.map((entry, index) => (
               <div
@@ -186,7 +186,7 @@ export default function Page({ params }: Params) {
         <Link href="/" className="button">
           ⬅️
         </Link>
-        {category?.category_type == null ? (
+        {category?.category_type_id == null ? (
           <div
             className="button saveEntries"
             data-category="category.id"

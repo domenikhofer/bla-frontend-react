@@ -4,6 +4,7 @@ interface Category {
     emoji: string
     parent_id?: number
     category_type?: CategoryType
+    category_type_id?: number
     subcategories: Category[]
     entries?: Entry[]
 }
