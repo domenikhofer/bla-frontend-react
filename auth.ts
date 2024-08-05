@@ -8,7 +8,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   callbacks: {
     authorized: async ({ auth,  request: { nextUrl } }) => {
+      if(auth?.user?.email !== 'domenikhofer@gmail.com') {
+        return false
+      }
       if(nextUrl.pathname.startsWith('/login') && !!auth?.user) {
+        console.log(auth)
         return Response.redirect(new URL('/', nextUrl));
       }
       return !!auth
