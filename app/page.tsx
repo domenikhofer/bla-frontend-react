@@ -8,6 +8,7 @@ import CategoryActions from "@/app/components/CategoryActions";
 import plantTop from "/public/images/plantTop.png";
 import plantSide from "/public/images/plantSide.png";
 import plantBottom from "/public/images/plantBottom.png";
+import { signOut } from "next-auth/react"
 import { TransitionGroup, CSSTransition } from "react-transition-group";
 
 export default function Home() {
@@ -107,6 +108,7 @@ export default function Home() {
       <div className="pageActions">
         {editMode ? (
           <>
+            <button onClick={() => signOut()}>👋🏻</button>
             <Link className="button" href="/category/create">
               ➕
             </Link>

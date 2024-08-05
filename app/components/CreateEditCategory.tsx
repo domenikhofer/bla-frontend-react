@@ -7,15 +7,15 @@ import { redirect } from "next/navigation";
 
 interface Props {
   type: string;
-  categoryId: string;
+  category_id: string;
 }
 
 export default function CreateEditCategory(props: Props) {
   const [category, setCategory] = useState<Category>({
     emoji: "",
     name: "",
-    parentId: undefined,
-    categoryType: undefined,
+    parent_id: undefined,
+    category_type: undefined,
     subcategories: [],
   });
   const [hasChildren, setHasChildren] = useState(false);
@@ -27,7 +27,7 @@ export default function CreateEditCategory(props: Props) {
       await CategoryModel.createCategory(formData);
       redirect("/");
     }
-    await CategoryModel.updateCategory(props.categoryId, formData);
+    await CategoryModel.updateCategory(props.category_id, formData);
     redirect("/");
   };
   useEffect(() => {
@@ -38,7 +38,7 @@ export default function CreateEditCategory(props: Props) {
       setCategoryTypes(ct);
     });
     if (props.type === "edit") {
-      CategoryModel.getCategory(props.categoryId, false).then((c: Category) => {
+      CategoryModel.getCategory(props.category_id, false).then((c: Category) => {
         setCategory(c);
         if (c.subcategories.length > 0) {
           setHasChildren(true);
@@ -79,10 +79,10 @@ export default function CreateEditCategory(props: Props) {
       <label>
         <div className="label">Parent Category</div>
         <select
-          name="parentId"
-          value={category.parentId}
+          name="parent_id"
+          value={category.parent_id}
           onChange={(e) => {
-            setCategory({ ...category, parentId: parseInt(e.target.value) });
+            setCategory({ ...category, parent_id: parseInt(e.target.value) });
           }}
         >
           <option value="">No Category</option>
@@ -97,12 +97,12 @@ export default function CreateEditCategory(props: Props) {
       <label>
         <div className="label">Category Type</div>
         <select
-          name="categoryTypeId"
-          value={category.categoryType?.id}
+          name="category_type_id"
+          value={category.category_type?.id}
           onChange={(e) => {
             setCategory({
               ...category,
-              categoryType: { id: parseInt(e.target.value) },
+              category_type: { id: parseInt(e.target.value) },
             });
           }}
         >

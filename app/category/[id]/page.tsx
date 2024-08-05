@@ -36,7 +36,7 @@ export default function Page({ params }: Params) {
             id: new Date().getTime(),
             url: "",
             image: "",
-            categoryId: c.id,
+            category_id: c.id,
           },
         ]);
       }
@@ -68,7 +68,7 @@ export default function Page({ params }: Params) {
         id: new Date().getTime(),
         url: "",
         image: "",
-        categoryId: category?.id,
+        category_id: category?.id,
         new: true,
       }
       setEntries([...entries.slice(0, entryIndex), newElement, ...entries.slice(entryIndex)]);
@@ -116,7 +116,7 @@ export default function Page({ params }: Params) {
         <div className="header">
           <h1>{category?.name}</h1>
         </div>
-        {category?.categoryType == null ? (
+        {category?.category_type == null ? (
           <div className="entryWrapper">
             {entries.map((entry, index) => (
               <div
@@ -186,7 +186,7 @@ export default function Page({ params }: Params) {
         <Link href="/" className="button">
           ⬅️
         </Link>
-        {category?.categoryType == null ? (
+        {category?.category_type == null ? (
           <div
             className="button saveEntries"
             data-category="category.id"

@@ -1,4 +1,4 @@
-const baseUrl = 'http://localhost:5173/api' // Move to .env
+const baseUrl = 'http://localhost/better-list-app/bla/public/api' // Move to .env
 
 export async function getCategories() : Promise<Category[]> {
     const response = await fetch(`${baseUrl}/category`);
@@ -42,8 +42,11 @@ export async function createCategory(formData: FormData) {
 }
 
 export async function updateCategory(id: string, formData: FormData) {
-    const response = await fetch(`${baseUrl}/category/${id}`, {
-        method: 'PUT',
+    const response = await fetch(`${baseUrl}/category/${id}?_method=PUT`, {
+        method: 'POST',
+        headers: {
+            "Accept": "application/json",
+          },
         body: formData
     });
 

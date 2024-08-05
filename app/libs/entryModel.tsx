@@ -1,12 +1,15 @@
-const baseUrl = "http://localhost:5173/api"; // Move to .env
+const baseUrl = 'http://localhost/better-list-app/bla/public/api' // Move to .env
 
 export async function createEntries(entries: Entry[]) {
   const response = await fetch(`${baseUrl}/entry`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      "Accept": "application/json",
     },
-    body: JSON.stringify(entries),
+    body: JSON.stringify({
+      category_id: entries[0].category_id,
+      entries: entries}),
   });
 
   if (!response.ok) {
@@ -20,6 +23,7 @@ export async function addMovieTVShow(data: any) {
     method: "POST",
     headers: {
         "Content-Type": "application/json",
+        "Accept": "application/json",
       },
     body: JSON.stringify(data),
   });
@@ -41,7 +45,7 @@ export async function getEntry(id?: string): Promise<Entry> {
 
 export async function getSimilarEntries(query: string, categoryId?: number) {
   const response = await fetch(
-    `${baseUrl}/entry/search/${categoryId}/${encodeURIComponent(query)}`
+    `${baseUrl}/entry/search?category_id=${categoryId}&query=${encodeURIComponent(query)}`
   );
 
   if (!response.ok) {

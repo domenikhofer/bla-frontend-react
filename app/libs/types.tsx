@@ -2,8 +2,8 @@ interface Category {
     id?: number
     name: string
     emoji: string
-    parentId?: number
-    categoryType?: CategoryType
+    parent_id?: number
+    category_type?: CategoryType
     subcategories: Category[]
     entries?: Entry[]
 }
@@ -16,7 +16,7 @@ interface CategoryType {
 interface Entry {
     id: number|string
     value: string
-    categoryId?: number
+    category_id?: number
     url: string
     image: string
     new?: boolean

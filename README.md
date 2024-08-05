@@ -45,4 +45,5 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 - Viewtransition from ImageEntry back to overview
 - Better Error Handling
 - Don't allow empty or duplicate ImageEntries
+- Lazy Loading ImageEntries
 

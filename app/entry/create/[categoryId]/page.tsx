@@ -18,7 +18,7 @@ interface MovieTV {
   url: string;
   value: string;
   isDone: boolean;
-  categoryId: string;
+  category_id: string;
 }
 
 export default function Page({ params }: Params) {
@@ -49,7 +49,7 @@ export default function Page({ params }: Params) {
       url: `https://www.themoviedb.org/${entry.media_type}/${entry.id}`,
       value: entry.name || entry.title,
       isDone: false,
-      categoryId: params.categoryId,
+      category_id: params.categoryId,
     });
   };
 

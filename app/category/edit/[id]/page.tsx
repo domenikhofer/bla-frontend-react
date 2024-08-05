@@ -7,5 +7,5 @@ interface Params {
 }
 
 export default function Page({params}: Params) {
-    return <CreateEditCategory type="edit" categoryId={params.id} />
+    return <CreateEditCategory type="edit" category_id={params.id} />
 }
