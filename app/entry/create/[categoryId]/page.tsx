@@ -32,7 +32,7 @@ export default function Page({ params }: Params) {
       e.preventDefault();
       const query = e.target.value;
       const response = await EntryModel.findMovieTVShow(query);
-      setSearchResults(response.results);
+      setSearchResults(response);
     }
   };
 
@@ -57,7 +57,7 @@ export default function Page({ params }: Params) {
     <form onSubmit={(e) => createMediaEntry(e)} method="post">
       <h2>Add Entry</h2>
       <label>
-        <div className="label">Enter a Movie/TV Show and Press Enter</div>
+        <div className="label">Enter Movie/TV Show and hit Enter</div>
         <input
           type="search"
           onKeyDown={(e) => searchMovieTV(e)}
@@ -65,8 +65,9 @@ export default function Page({ params }: Params) {
           placeholder=""
         />
       </label>
+      {searchResults?.total_results < 1 ? (<p>No Results</p>) : null}
       <div className="imageEntryWrapper">
-        {searchResults.map((entry: any) => (
+        {searchResults?.results?.map((entry: any) => (
           <div
             key={entry.id}
             onClick={() => selectMovieTV(entry)}
@@ -82,10 +83,12 @@ export default function Page({ params }: Params) {
               ) : (
                 <div className="image noImage">{entry.name || entry.title}</div>
               )}
+              {entry.media_type === "movie" ? (<div className="mediaType">🎬</div>) : (<div className="mediaType">📺</div>)}
             </div>
           </div>
         ))}
       </div>
+      
       <div className="formActions fixed">
         {movieTV?.id ? <button type="submit">✔️</button> : null}
         <Link href={`/category/${params.categoryId}`} className="button">

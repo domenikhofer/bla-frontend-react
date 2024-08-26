@@ -20,6 +20,7 @@
 
 body {
   background-image: var(--backgroundGradient);
+  background-attachment: fixed;
   color: var(--fontColorMain);
   font-family: "Quicksand", sans-serif;
   font-size: 14px;
@@ -28,6 +29,7 @@ body {
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
 
 h1 {
@@ -228,11 +230,13 @@ select {
 
 .container {
   overflow-x: hidden;
-  padding: 40px;
+  padding: 20px;
   min-height: 100dvh;
   position: relative;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  max-width: 500px;
 }
 
 .pageActions,
@@ -471,6 +475,7 @@ select {
     & .title {
       all: unset;
       flex-grow: 1;
+      field-sizing: content;
 
       &[contenteditable] {
         outline: 0px solid transparent;
@@ -577,6 +582,17 @@ select {
         view-transition-name: media-thumbnail;
         contain: layout;
       }
+    }
+
+    & .mediaType {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      background: var(--white);
+      opacity: 0.9;
+      border-radius: 50%;
+      padding: 5px;
+      box-sizing: border-box;
     }
   }
 }

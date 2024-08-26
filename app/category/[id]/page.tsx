@@ -125,7 +125,7 @@ export default function Page({ params }: Params) {
                   activeEntry?.id == entry.id ? "active" : ""
                 }`}
               >
-                <input
+                <textarea
                   className="title"
                   data-new={entry.new}
                   data-id={entry.id}
@@ -135,11 +135,12 @@ export default function Page({ params }: Params) {
                   spellCheck="false"
                   defaultValue={entry.value}
                   ref={refCallback}
+                  wrap='soft'
                   onChange={(e) => {
                     entry.value = e.target.value;
                     setEntries([...entries]);
                   }}
-                />
+                ></textarea>
                 <div className="actions">
                   <a onClick={webSearch} className="link" target="_blank">
                     🔍
