@@ -23,7 +23,7 @@ interface MovieTV {
 
 export default function Page({ params }: Params) {
   const [movieTV, setMovieTV] = useState<MovieTV>();
-  const [searchResults, setSearchResults] = useState([]);
+  const [searchResults, setSearchResults] = useState<any>([]);
   const router = useRouter()
 
 
