@@ -108,6 +108,7 @@ export default function Home() {
       <div className="pageActions">
         {editMode ? (
           <>
+          <Link className="button" href="https://domenik.ch/bla-backend/public/api/download-backup">💾</Link>
             <button onClick={() => signOut()}>👋🏻</button>
             <Link className="button" href="/category/create">
               ➕

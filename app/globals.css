@@ -84,6 +84,11 @@ button,
   &.invisible {
     visibility: hidden;
   }
+
+  &.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
 }
 
 label {
@@ -307,7 +312,7 @@ select {
     pointer-events: none;
 
     & img {
-      rotate: 50deg;
+      rotate: 75deg;
       translate: 0 15px;
     }
   }
@@ -453,7 +458,7 @@ select {
     position: relative;
     display: flex;
     justify-content: space-between;
-
+    
     &:after {
       content: "";
       position: absolute;
@@ -464,25 +469,42 @@ select {
       background-color: var(--lightBlue);
     }
 
+    &:has(.bold):after {
+      background-color: var(--fontColorMain);
+    }
+
+    
     &:last-child:after {
       display: none;
     }
-
+    
     &.template {
       display: none;
     }
-
+    
     & .title {
       all: unset;
       flex-grow: 1;
       field-sizing: content;
-
+      
+      &.bold {
+        font-weight: 900;
+        font-size: 1.1em;
+        margin-top: 10px;
+        margin-left: -10px;
+        clip-path: inset(0 0 0 10px);
+      }
+      
       &[contenteditable] {
         outline: 0px solid transparent;
         padding-left: 1px;
       }
     }
 
+    &:first-child  .bold{
+      margin-top: 0;
+    }
+    
     & .actions {
       opacity: 0;
       pointer-events: none;

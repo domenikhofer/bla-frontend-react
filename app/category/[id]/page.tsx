@@ -1,11 +1,10 @@
 "use client";
 
-import { Link } from 'next-view-transitions'
-import { useRef, useEffect, useState, useCallback } from "react";
+import { Link } from "next-view-transitions";
+import { useRef, useEffect, useState, useCallback, useMemo } from "react";
 import * as CategoryModel from "@/app/libs/categoryModel";
 import * as EntryModel from "@/app/libs/entryModel";
-import { useSearchParams } from 'next/navigation'
-
+import { useSearchParams } from "next/navigation";
 
 interface Params {
   params: {
@@ -15,22 +14,28 @@ interface Params {
 
 export default function Page({ params }: Params) {
   const [category, setCategory] = useState<Category>();
-  const [entries, setEntries] = useState<Entry[]>([]); 
+  const [entries, setEntries] = useState<Entry[]>([]);
+  const [initialEntries, setInitialEntries] = useState<Entry[]>([]);
   const [similarEntries, setSimilarEntries] = useState<Entry[]>([]);
   const [justSaved, setJustSaved] = useState(false);
+  const [areYouSure, setAreYouSure] = useState(true);
   const [activeEntry, setActiveEntry] = useState<Entry>();
   const entryRefs = useRef<any>([]);
-  const searchParams = useSearchParams()
-  const lastEntryId = searchParams.get('backFrom')
-  
+  const searchParams = useSearchParams();
+  const lastEntryId = searchParams.get("backFrom");
+  const isDirty = useMemo(
+    () => JSON.stringify(initialEntries) != JSON.stringify(entries),
+    [initialEntries, entries]
+  );
+
   useEffect(() => {
-   
     CategoryModel.getCategory(params.id, true).then((c: Category) => {
       setCategory(c);
       if (c.entries && c.entries.length > 0) {
         setEntries(c.entries);
+        setInitialEntries(JSON.parse(JSON.stringify(c.entries)));
       } else {
-        setEntries([
+        const template = [
           {
             value: "First Entry",
             id: new Date().getTime(),
@@ -38,12 +43,13 @@ export default function Page({ params }: Params) {
             image: "",
             category_id: c.id,
           },
-        ]);
+        ];
+        setEntries(template);
+        setInitialEntries(JSON.parse(JSON.stringify(template)));
       }
     });
   }, []);
-  
-  
+
   const focusEntry = (entry: Entry) => {
     setActiveEntry(entry);
     setSimilarEntries([]);
@@ -51,15 +57,14 @@ export default function Page({ params }: Params) {
 
   const refCallback = useCallback((element: any) => {
     entryRefs.current.push(element);
-    if(element?.dataset.new == 'true') {
+    if (element?.dataset.new == "true") {
       element.click();
       element.focus();
     }
   }, []);
 
   const manipulateEntry = async (e: any, entry: Entry) => {
-    
-    if (e.key == 'Enter') {
+    if (e.key == "Enter") {
       e.preventDefault();
       setSimilarEntries([]);
       const entryIndex = entries.indexOf(entry) + 1;
@@ -70,37 +75,62 @@ export default function Page({ params }: Params) {
         image: "",
         category_id: category?.id,
         new: true,
-      }
-      setEntries([...entries.slice(0, entryIndex), newElement, ...entries.slice(entryIndex)]);
+      };
+      setEntries([
+        ...entries.slice(0, entryIndex),
+        newElement,
+        ...entries.slice(entryIndex),
+      ]);
     }
-    
-    if(e.key == 'Backspace' && entry.value == '') {
+
+    if (e.key == "Backspace" && (entry.value == "" || entry.value == null)) {
+      if (entries.length == 1) {
+        return;
+      }
       e.preventDefault();
       const entryIndex = entries.indexOf(entry);
-      setEntries(entries.filter(e => e.id !== entry.id));
-      const entryRef = entryRefs.current.find( (e: any) => e?.dataset.id == entries[entryIndex - 1].id)
+      setEntries(entries.filter((e) => e.id !== entry.id));
+      let entryRef;
+      if (entryIndex == 0) {
+        entryRef = entryRefs.current.find(
+          (e: any) => e?.dataset.id == entries[entryIndex + 1].id
+        );
+      } else {
+        entryRef = entryRefs.current.find(
+          (e: any) => e?.dataset.id == entries[entryIndex - 1].id
+        );
+      }
       entryRef.click();
       entryRef.focus();
+      entryRef.setSelectionRange(entryRef.value.length, entryRef.value.length);
       setSimilarEntries([]);
     }
-}
+  };
 
   const saveEntries = async () => {
-    await EntryModel.createEntries(entries);
     setJustSaved(true);
-    setTimeout(() => {
-      setJustSaved(false);
-    }, 1000);
+    await EntryModel.createEntries(entries);
+    setInitialEntries(JSON.parse(JSON.stringify(entries)));
+    setJustSaved(false);
+  };
+
+  const goBack = async () => {
+    setAreYouSure(false);
+  };
+
+  const isMarkup = (entry: Entry) => {
+    if(entry.value?.startsWith("#")) return "bold"
+    return ""
   };
 
   const findSimilarEntries = async (query: string) => {
     if (query.length >= 3) {
-        const response = await EntryModel.getSimilarEntries(query, category?.id)
-       setSimilarEntries(response);
+      const response = await EntryModel.getSimilarEntries(query, category?.id);
+      setSimilarEntries(response);
     } else {
-        setSimilarEntries([]);
+      setSimilarEntries([]);
     }
-}
+  };
 
   const webSearch = () => {
     window.open(
@@ -126,16 +156,18 @@ export default function Page({ params }: Params) {
                 }`}
               >
                 <textarea
-                  className="title"
+                  className={`title ${isMarkup(entry)}`}
                   data-new={entry.new}
                   data-id={entry.id}
-                  onKeyUp={(e) => findSimilarEntries((e.target as HTMLInputElement).value)}
+                  onKeyUp={(e) =>
+                    findSimilarEntries((e.target as HTMLInputElement).value)
+                  }
                   onKeyDown={(e) => manipulateEntry(e, entry)}
                   onClick={() => focusEntry(entry)}
                   spellCheck="false"
                   defaultValue={entry.value}
                   ref={refCallback}
-                  wrap='soft'
+                  wrap="soft"
                   onChange={(e) => {
                     entry.value = e.target.value;
                     setEntries([...entries]);
@@ -184,16 +216,25 @@ export default function Page({ params }: Params) {
       </div>
 
       <div className="pageActions fixed">
-        <Link href="/" className="button">
-          ⬅️
-        </Link>
+        {!isDirty || !areYouSure ? (
+          <Link href="/" className="button">
+            ⬅️
+          </Link>
+        ) : (
+          <div className="button" onClick={goBack}>
+            ❗
+          </div>
+        )}
+
         {category?.category_type_id == null ? (
           <div
-            className="button saveEntries"
+            className={`button saveEntries ${
+              !isDirty || justSaved ? "disabled" : ""
+            }`}
             data-category="category.id"
             onClick={saveEntries}
           >
-            {justSaved ? "✅" : "💾"}
+            {justSaved ? "⌛" : "💾"}
           </div>
         ) : (
           <Link
