@@ -31,6 +31,7 @@ export default function Page({ params }: Params) {
   useEffect(() => {
     CategoryModel.getCategory(params.id, true).then((c: Category) => {
       setCategory(c);
+
       if (c.entries && c.entries.length > 0) {
         setEntries(c.entries);
         setInitialEntries(JSON.parse(JSON.stringify(c.entries)));
@@ -74,7 +75,7 @@ export default function Page({ params }: Params) {
         url: "",
         image: "",
         category_id: category?.id,
-        new: true,
+        // new: true,
       };
       setEntries([
         ...entries.slice(0, entryIndex),

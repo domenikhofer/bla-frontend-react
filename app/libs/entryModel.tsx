@@ -1,68 +1,48 @@
-const baseUrl = 'https://domenik.ch/bla-backend/public/api' // Move to .env
+import { createClient } from "@supabase/supabase-js";
+const supabase = createClient(
+  "https://ckzpnyzudwngnoqxrgqu.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNrenBueXp1ZHduZ25vcXhyZ3F1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUxMzA3NzUsImV4cCI6MjA2MDcwNjc3NX0.4GDl_iUjvlxgxXylCi1hSJ9vrB7nnMI2dB32n0TCeRA"
+);
 
 export async function createEntries(entries: Entry[]) {
-  const response = await fetch(`${baseUrl}/entry`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Accept": "application/json",
-    },
-    body: JSON.stringify({
-      category_id: entries[0].category_id,
-      entries: entries}),
-  });
-
-  if (!response.ok) {
-    throw new Error("Error fetching data");
-  }
+  const response = await supabase.from('entries').delete().eq('category_id',entries[0].category_id )
+  const { error } = await supabase.from("entries").insert(entries);
 }
 
 export async function addMovieTVShow(data: any) {
   delete data.id;
-  const response = await fetch(`${baseUrl}/entry/store-media`, {
-    method: "POST",
-    headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-      },
-    body: JSON.stringify(data),
-  });
+  const { error } = await supabase.from("entries").insert(data);
 
-  if (!response.ok) {
-    throw new Error("Error fetching data");
-  }
 }
 
 export async function getEntry(id?: string): Promise<Entry> {
-  const response = await fetch(`${baseUrl}/entry/${id}`);
+  const { data } = await supabase
+      .from("entries")
+      .select(
+        `
+           *
+        `
+      )
+      .eq("id", id)
+      .is("deleted_at", null);
 
-  if (!response.ok) {
-    throw new Error("Error fetching data");
-  }
-
-  return await response.json();
+    return data ? data[0] : [];
 }
 
 export async function getSimilarEntries(query: string, categoryId?: number) {
-  const response = await fetch(
-    `${baseUrl}/entry/search?category_id=${categoryId}&query=${encodeURIComponent(query)}`
-  );
 
-  if (!response.ok) {
-    throw new Error("Error fetching data");
-  }
+  const { data, error } = await supabase.from('entries').select().eq('category_id', categoryId).like('value', `%${query}%`)
 
-  return await response.json();
+return data
 }
 
 export async function deleteEntry(id: any) {
-  const response = await fetch(`${baseUrl}/entry/${id}`, {
-    method: "DELETE",
-  });
-
-  if (!response.ok) {
-    throw new Error("Error fetching data");
-  }
+  const { error } = await supabase
+  .from("entries")
+  .update({
+    deleted_at: new Date()
+  })
+  .eq("id", id);
 }
 
 export async function findMovieTVShow(query: string) {

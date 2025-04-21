@@ -5,7 +5,7 @@ interface Category {
     parent_id?: number
     category_type?: CategoryType
     category_type_id?: number
-    subcategories: Category[]
+    categories?: Category[]
     entries?: Entry[]
 }
 

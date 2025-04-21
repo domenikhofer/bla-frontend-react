@@ -17,7 +17,7 @@ interface MovieTV {
   image: string;
   url: string;
   value: string;
-  isDone: boolean;
+  // isDone: boolean;
   category_id: string;
 }
 
@@ -48,7 +48,7 @@ export default function Page({ params }: Params) {
       image: entry.poster_path,
       url: `https://www.themoviedb.org/${entry.media_type}/${entry.id}`,
       value: entry.name || entry.title,
-      isDone: false,
+      // isDone: false,
       category_id: params.categoryId,
     });
   };

@@ -8,13 +8,27 @@ import CategoryActions from "@/app/components/CategoryActions";
 import plantTop from "/public/images/plantTop.png";
 import plantSide from "/public/images/plantSide.png";
 import plantBottom from "/public/images/plantBottom.png";
-import { signOut } from "next-auth/react"
 import { TransitionGroup, CSSTransition } from "react-transition-group";
+import { createClient } from '@supabase/supabase-js'
+  import { Auth } from '@supabase/auth-ui-react'
+  import { ThemeSupa } from '@supabase/auth-ui-shared'
+import React from "react";
+
+  const supabase = createClient(
+    "https://ckzpnyzudwngnoqxrgqu.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNrenBueXp1ZHduZ25vcXhyZ3F1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUxMzA3NzUsImV4cCI6MjA2MDcwNjc3NX0.4GDl_iUjvlxgxXylCi1hSJ9vrB7nnMI2dB32n0TCeRA"
+  );
+
+  // TODO: logout button + keep scrolling pos + switch all to supabase + only allow movies once + return error if already exists + update project + backup button
+  
+
 
 export default function Home() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [editMode, setEditMode] = useState(false);
   const [showEditBtn, setShowEditBtn] = useState(false);
+  const [session, setSession] = useState(null)
+
 
   useEffect(() => {
     getCategories().then((c: any) => {
@@ -22,6 +36,22 @@ export default function Home() {
     });
   }, []);
 
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session)
+    })
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session)
+    })
+    return () => subscription.unsubscribe()
+  }, [])
+
+  if (!session) {
+    return (<Auth supabaseClient={supabase} appearance={{ theme: ThemeSupa }} />)
+  }
+  else {
   return (
     <>
       <div className={`categoriesWrapper ${editMode ? "reorder" : ""}`}>
@@ -51,7 +81,7 @@ export default function Home() {
               )}
               <div className="subcategories">
                 <TransitionGroup component={null}>
-                  {category.subcategories.map((subcategory: Category) => (
+                  {category.categories?.map((subcategory: Category) => (
                     <CSSTransition
                       component={null}
                       key={subcategory.id}
@@ -108,8 +138,8 @@ export default function Home() {
       <div className="pageActions">
         {editMode ? (
           <>
-          <Link className="button" href="https://domenik.ch/bla-backend/public/api/download-backup">💾</Link>
-            <button onClick={() => signOut()}>👋🏻</button>
+          {/* <Link className="button" href="https://domenik.ch/bla-backend/public/api/download-backup">💾</Link>
+            <button>👋🏻</button> */}
             <Link className="button" href="/category/create">
               ➕
             </Link>
@@ -133,4 +163,5 @@ export default function Home() {
       </div>
     </>
   );
+}
 }

@@ -37,7 +37,7 @@ export default function Page({ params }: Params) {
     setTimeout(() => {
       setDeletionState("shredded done");
       setTimeout(() => {
-        const categoryId = entry?.category?.id;
+        const categoryId = entry?.category_id;
         EntryModel.deleteEntry(entry?.id).then(() => {
           router.push(`/category/${categoryId}`);
         });

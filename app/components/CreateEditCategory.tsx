@@ -16,7 +16,7 @@ export default function CreateEditCategory(props: Props) {
     name: "",
     parent_id: undefined,
     category_type: undefined,
-    subcategories: [],
+    categories: [],
   });
   const [hasChildren, setHasChildren] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -40,7 +40,7 @@ export default function CreateEditCategory(props: Props) {
     if (props.type === "edit") {
       CategoryModel.getCategory(props.category_id, false).then((c: Category) => {
         setCategory(c);
-        if (c.subcategories.length > 0) {
+        if (c?.categories?.length > 0) {
           setHasChildren(true);
         }
       });
