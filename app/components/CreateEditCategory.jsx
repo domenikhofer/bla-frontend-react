@@ -6,7 +6,7 @@ import * as CategoryModel from "../libs/categoryModel";
 import { redirect } from "next/navigation";
 
 export default function CreateEditCategory(props) {
-  const [category, setCategory] = useState<Category>({
+  const [category, setCategory] = useState({
     emoji: "",
     name: "",
     parent_id: undefined,
