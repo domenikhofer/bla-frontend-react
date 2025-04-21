@@ -1,8 +1,8 @@
 import { Link } from "next-view-transitions";
 import { useState } from 'react'
 import { CSSTransition } from 'react-transition-group'
-import Modal from '@/app/components/Modal'
-import * as CategoryModel from '@/app/libs/categoryModel'
+import Modal from '../components/Modal'
+import * as CategoryModel from '../libs/categoryModel'
 
 
 export default function CategoryActions(props) {

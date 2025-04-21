@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Link } from "next-view-transitions";
-import * as EntryModel from "@/app/libs/entryModel";
+import * as EntryModel from "../../../libs/entryModel";
 import { useRouter } from "next/navigation";
 
 export default function Page({ params }) {

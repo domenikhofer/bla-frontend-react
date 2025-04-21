@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import * as CategoryModel from "@/app/libs/categoryModel";
+import * as CategoryModel from "../libs/categoryModel";
 import { redirect } from "next/navigation";
 
 export default function CreateEditCategory(props) {

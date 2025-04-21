@@ -2,8 +2,8 @@
 
 import { Link } from "next-view-transitions";
 import { useRef, useEffect, useState, useCallback, useMemo } from "react";
-import * as CategoryModel from "@/app/libs/categoryModel";
-import * as EntryModel from "@/app/libs/entryModel";
+import * as CategoryModel from "../../libs/categoryModel";
+import * as EntryModel from "../../libs/entryModel";
 import { useSearchParams } from "next/navigation";
 
 export default function Page({ params }) {

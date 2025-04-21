@@ -2,9 +2,9 @@
 
 import { Link } from "next-view-transitions";
 import { useEffect, useState } from "react";
-import * as EntryModel from "@/app/libs/entryModel";
+import * as EntryModel from "../../libs/entryModel";
 import { CSSTransition } from 'react-transition-group'
-import Modal from '@/app/components/Modal'
+import Modal from '../../components/Modal'
 import { useRouter } from "next/navigation";
 
 
