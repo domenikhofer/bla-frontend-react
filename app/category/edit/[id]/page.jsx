@@ -1,11 +1,5 @@
 import CreateEditCategory from '@/app/components/CreateEditCategory'
 
-interface Params {
-    params: {
-        id: string
-    }
-}
-
-export default function Page({params}: Params) {
+export default function Page({params}) {
     return <CreateEditCategory type="edit" category_id={params.id} />
 }

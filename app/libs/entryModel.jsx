@@ -4,18 +4,18 @@ const supabase = createClient(
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNrenBueXp1ZHduZ25vcXhyZ3F1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUxMzA3NzUsImV4cCI6MjA2MDcwNjc3NX0.4GDl_iUjvlxgxXylCi1hSJ9vrB7nnMI2dB32n0TCeRA"
 );
 
-export async function createEntries(entries: Entry[]) {
+export async function createEntries(entries) {
   const response = await supabase.from('entries').delete().eq('category_id',entries[0].category_id )
   const { error } = await supabase.from("entries").insert(entries);
 }
 
-export async function addMovieTVShow(data: any) {
+export async function addMovieTVShow(data) {
   delete data.id;
   const { error } = await supabase.from("entries").insert(data);
 
 }
 
-export async function getEntry(id?: string): Promise<Entry> {
+export async function getEntry(id) {
   const { data } = await supabase
       .from("entries")
       .select(
@@ -29,14 +29,14 @@ export async function getEntry(id?: string): Promise<Entry> {
     return data ? data[0] : [];
 }
 
-export async function getSimilarEntries(query: string, categoryId?: number) {
+export async function getSimilarEntries(query, categoryId) {
 
   const { data, error } = await supabase.from('entries').select().eq('category_id', categoryId).like('value', `%${query}%`)
 
 return data
 }
 
-export async function deleteEntry(id: any) {
+export async function deleteEntry(id) {
   const { error } = await supabase
   .from("entries")
   .update({
@@ -45,7 +45,7 @@ export async function deleteEntry(id: any) {
   .eq("id", id);
 }
 
-export async function findMovieTVShow(query: string) {
+export async function findMovieTVShow(query) {
   const response = await fetch(
     `https://api.themoviedb.org/3/search/multi?query=${query}`,
     {

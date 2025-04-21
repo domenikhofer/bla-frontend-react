@@ -1,13 +1,6 @@
 import  { createPortal } from "react-dom"
 
-interface Props {
-    onClose: () => void,
-    onDelete: () => void,
-    itemName?: string,
-    type: string
-}
-
-export default function Modal(props : Props) {
+export default function Modal(props) {
     return createPortal (
         <div className="modal">
             <div className="content">

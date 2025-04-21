@@ -24,14 +24,14 @@ import React from "react";
 
 
 export default function Home() {
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [categories, setCategories] = useState([]);
   const [editMode, setEditMode] = useState(false);
   const [showEditBtn, setShowEditBtn] = useState(false);
   const [session, setSession] = useState(null)
 
 
   useEffect(() => {
-    getCategories().then((c: any) => {
+    getCategories().then((c) => {
       setCategories(c);
     });
   }, []);
@@ -55,7 +55,7 @@ export default function Home() {
   return (
     <>
       <div className={`categoriesWrapper ${editMode ? "reorder" : ""}`}>
-        {categories.map((category: Category) => (
+        {categories.map((category) => (
           <>
             <div
               key={category.id}
@@ -81,7 +81,7 @@ export default function Home() {
               )}
               <div className="subcategories">
                 <TransitionGroup component={null}>
-                  {category.categories?.map((subcategory: Category) => (
+                  {category.categories?.map((subcategory) => (
                     <CSSTransition
                       component={null}
                       key={subcategory.id}

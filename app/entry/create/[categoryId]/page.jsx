@@ -5,29 +5,13 @@ import { Link } from "next-view-transitions";
 import * as EntryModel from "@/app/libs/entryModel";
 import { useRouter } from "next/navigation";
 
-
-interface Params {
-  params: {
-    categoryId: string;
-  };
-}
-
-interface MovieTV {
-  id: number;
-  image: string;
-  url: string;
-  value: string;
-  // isDone: boolean;
-  category_id: string;
-}
-
-export default function Page({ params }: Params) {
-  const [movieTV, setMovieTV] = useState<MovieTV>();
-  const [searchResults, setSearchResults] = useState<any>([]);
+export default function Page({ params }) {
+  const [movieTV, setMovieTV] = useState();
+  const [searchResults, setSearchResults] = useState([]);
   const router = useRouter()
 
 
-  const searchMovieTV = async (e: any) => {
+  const searchMovieTV = async (e) => {
     if (e.key == "Enter") {
       e.preventDefault();
       const query = e.target.value;
@@ -36,13 +20,13 @@ export default function Page({ params }: Params) {
     }
   };
 
-  const createMediaEntry = async (e: any) => {
+  const createMediaEntry = async (e) => {
     e.preventDefault();
     await EntryModel.addMovieTVShow(movieTV);
       router.push(`/category/${params.categoryId}`);
   };
 
-  const selectMovieTV = (entry: any) => {
+  const selectMovieTV = (entry) => {
     setMovieTV({
       id: entry.id,
       image: entry.poster_path,
@@ -67,7 +51,7 @@ export default function Page({ params }: Params) {
       </label>
       {searchResults?.total_results < 1 ? (<p>No Results</p>) : null}
       <div className="imageEntryWrapper">
-        {searchResults?.results?.map((entry: any) => (
+        {searchResults?.results?.map((entry) => (
           <div
             key={entry.id}
             onClick={() => selectMovieTV(entry)}

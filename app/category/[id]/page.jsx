@@ -6,21 +6,15 @@ import * as CategoryModel from "@/app/libs/categoryModel";
 import * as EntryModel from "@/app/libs/entryModel";
 import { useSearchParams } from "next/navigation";
 
-interface Params {
-  params: {
-    id: string;
-  };
-}
-
-export default function Page({ params }: Params) {
-  const [category, setCategory] = useState<Category>();
-  const [entries, setEntries] = useState<Entry[]>([]);
-  const [initialEntries, setInitialEntries] = useState<Entry[]>([]);
-  const [similarEntries, setSimilarEntries] = useState<Entry[]>([]);
+export default function Page({ params }) {
+  const [category, setCategory] = useState();
+  const [entries, setEntries] = useState([]);
+  const [initialEntries, setInitialEntries] = useState([]);
+  const [similarEntries, setSimilarEntries] = useState([]);
   const [justSaved, setJustSaved] = useState(false);
   const [areYouSure, setAreYouSure] = useState(true);
-  const [activeEntry, setActiveEntry] = useState<Entry>();
-  const entryRefs = useRef<any>([]);
+  const [activeEntry, setActiveEntry] = useState();
+  const entryRefs = useRef([]);
   const searchParams = useSearchParams();
   const lastEntryId = searchParams.get("backFrom");
   const isDirty = useMemo(
@@ -29,7 +23,7 @@ export default function Page({ params }: Params) {
   );
 
   useEffect(() => {
-    CategoryModel.getCategory(params.id, true).then((c: Category) => {
+    CategoryModel.getCategory(params.id, true).then((c) => {
       setCategory(c);
 
       if (c.entries && c.entries.length > 0) {
@@ -51,12 +45,12 @@ export default function Page({ params }: Params) {
     });
   }, []);
 
-  const focusEntry = (entry: Entry) => {
+  const focusEntry = (entry) => {
     setActiveEntry(entry);
     setSimilarEntries([]);
   };
 
-  const refCallback = useCallback((element: any) => {
+  const refCallback = useCallback((element) => {
     entryRefs.current.push(element);
     if (element?.dataset.new == "true") {
       element.click();
@@ -64,7 +58,7 @@ export default function Page({ params }: Params) {
     }
   }, []);
 
-  const manipulateEntry = async (e: any, entry: Entry) => {
+  const manipulateEntry = async (e, entry) => {
     if (e.key == "Enter") {
       e.preventDefault();
       setSimilarEntries([]);
@@ -94,11 +88,11 @@ export default function Page({ params }: Params) {
       let entryRef;
       if (entryIndex == 0) {
         entryRef = entryRefs.current.find(
-          (e: any) => e?.dataset.id == entries[entryIndex + 1].id
+          (e) => e?.dataset.id == entries[entryIndex + 1].id
         );
       } else {
         entryRef = entryRefs.current.find(
-          (e: any) => e?.dataset.id == entries[entryIndex - 1].id
+          (e) => e?.dataset.id == entries[entryIndex - 1].id
         );
       }
       entryRef.click();
@@ -119,12 +113,12 @@ export default function Page({ params }: Params) {
     setAreYouSure(false);
   };
 
-  const isMarkup = (entry: Entry) => {
+  const isMarkup = (entry) => {
     if(entry.value?.startsWith("#")) return "bold"
     return ""
   };
 
-  const findSimilarEntries = async (query: string) => {
+  const findSimilarEntries = async (query) => {
     if (query.length >= 3) {
       const response = await EntryModel.getSimilarEntries(query, category?.id);
       setSimilarEntries(response);
@@ -161,7 +155,7 @@ export default function Page({ params }: Params) {
                   data-new={entry.new}
                   data-id={entry.id}
                   onKeyUp={(e) =>
-                    findSimilarEntries((e.target as HTMLInputElement).value)
+                    findSimilarEntries((e.target).value)
                   }
                   onKeyDown={(e) => manipulateEntry(e, entry)}
                   onClick={() => focusEntry(entry)}

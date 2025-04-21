@@ -7,14 +7,9 @@ import { CSSTransition } from 'react-transition-group'
 import Modal from '@/app/components/Modal'
 import { useRouter } from "next/navigation";
 
-interface Params {
-  params: {
-    id: string;
-  };
-}
 
-export default function Page({ params }: Params) {
-  const [entry, setEntry] = useState<Entry>();
+export default function Page({ params }) {
+  const [entry, setEntry] = useState();
   const [deletionState, setDeletionState] = useState("");
   const [showModal, setShowModal] = useState(false);
   const router = useRouter()

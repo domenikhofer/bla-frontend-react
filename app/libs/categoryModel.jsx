@@ -4,7 +4,7 @@ const supabase = createClient(
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNrenBueXp1ZHduZ25vcXhyZ3F1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUxMzA3NzUsImV4cCI6MjA2MDcwNjc3NX0.4GDl_iUjvlxgxXylCi1hSJ9vrB7nnMI2dB32n0TCeRA"
 );
 
-export async function getCategories(): Promise<Category[] | null> {
+export async function getCategories(){
   const { data } = await supabase
     .from("categories")
     .select(
@@ -28,9 +28,9 @@ export async function getCategories(): Promise<Category[] | null> {
 }
 
 export async function getCategory(
-  id?: string,
-  withEntries?: Boolean
-): Promise<any | null> {
+  id,
+  withEntries
+) {
   if (withEntries) {
     const { data } = await supabase
       .from("categories")
@@ -76,14 +76,14 @@ export async function getCategory(
   }
 }
 
-export async function getCategoryTypes(): Promise<CategoryType[]> {
+export async function getCategoryTypes() {
   const { data } = await supabase.from("category_types").select(`
    *
 `);
   return data;
 }
 
-export async function createCategory(formData: FormData) {
+export async function createCategory(formData) {
   const { error } = await supabase.from("categories").insert({
     emoji: formData.get("emoji"),
     name: formData.get("name"),
@@ -92,7 +92,7 @@ export async function createCategory(formData: FormData) {
   });
 }
 
-export async function updateCategory(id: string, formData: FormData) {
+export async function updateCategory(id, formData) {
   const { error } = await supabase
     .from("categories")
     .update({
@@ -104,7 +104,7 @@ export async function updateCategory(id: string, formData: FormData) {
     .eq("id", id);
 }
 
-export async function deleteCategory(id?: number) {
+export async function deleteCategory(id) {
     const { error } = await supabase
     .from("categories")
     .update({

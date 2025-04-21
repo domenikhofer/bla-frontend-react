@@ -4,14 +4,8 @@ import { CSSTransition } from 'react-transition-group'
 import Modal from '@/app/components/Modal'
 import * as CategoryModel from '@/app/libs/categoryModel'
 
-interface Props {
-    category: Category,
-    className: string,
-    categories: Category[],
-    setCategories: Function
-}
 
-export default function CategoryActions(props: Props) {
+export default function CategoryActions(props) {
 
     const [showModal, setShowModal] = useState(false);
 
@@ -21,7 +15,7 @@ export default function CategoryActions(props: Props) {
 
     const deleteCategory = async () => {
         await CategoryModel.deleteCategory(props.category.id)
-        await CategoryModel.getCategories().then((c: Category[]) => {
+        await CategoryModel.getCategories().then((c) => {
             props.setCategories(c)
         })
         setShowModal(false);

@@ -5,12 +5,7 @@ import { useEffect, useState } from "react";
 import * as CategoryModel from "@/app/libs/categoryModel";
 import { redirect } from "next/navigation";
 
-interface Props {
-  type: string;
-  category_id: string;
-}
-
-export default function CreateEditCategory(props: Props) {
+export default function CreateEditCategory(props) {
   const [category, setCategory] = useState<Category>({
     emoji: "",
     name: "",
@@ -19,10 +14,10 @@ export default function CreateEditCategory(props: Props) {
     categories: [],
   });
   const [hasChildren, setHasChildren] = useState(false);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [categoryTypes, setCategoryTypes] = useState<CategoryType[]>([]);
+  const [categories, setCategories] = useState([]);
+  const [categoryTypes, setCategoryTypes] = useState([]);
 
-  const submitCategory = async (formData: FormData) => {
+  const submitCategory = async (formData) => {
     if (props.type === "create") {
       await CategoryModel.createCategory(formData);
       redirect("/");
@@ -31,14 +26,14 @@ export default function CreateEditCategory(props: Props) {
     redirect("/");
   };
   useEffect(() => {
-    CategoryModel.getCategories().then((c: Category[]) => {
+    CategoryModel.getCategories().then((c) => {
       setCategories(c);
     })
-    CategoryModel.getCategoryTypes().then((ct: CategoryType[]) => {
+    CategoryModel.getCategoryTypes().then((ct) => {
       setCategoryTypes(ct);
     });
     if (props.type === "edit") {
-      CategoryModel.getCategory(props.category_id, false).then((c: Category) => {
+      CategoryModel.getCategory(props.category_id, false).then((c) => {
         setCategory(c);
         if (c?.categories?.length > 0) {
           setHasChildren(true);
@@ -86,7 +81,7 @@ export default function CreateEditCategory(props: Props) {
           }}
         >
           <option value="">No Category</option>
-          {categories.map((c: Category) => (
+          {categories.map((c) => (
             <option key={c.id} value={c.id}>
               {c.name}
             </option>
@@ -107,7 +102,7 @@ export default function CreateEditCategory(props: Props) {
           }}
         >
           <option value="">No Type</option>
-          {categoryTypes.map((c: CategoryType) => (
+          {categoryTypes.map((c) => (
             <option key={c.id} value={c.id}>
               {c.name}
             </option>
