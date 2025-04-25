@@ -14,6 +14,7 @@ export default function Page({ params }) {
   const [justSaved, setJustSaved] = useState(false);
   const [areYouSure, setAreYouSure] = useState(true);
   const [activeEntry, setActiveEntry] = useState();
+  const [loading, setLoading] = useState(false);
   const entryRefs = useRef([]);
   const searchParams = useSearchParams();
   const lastEntryId = searchParams.get("backFrom");
@@ -23,6 +24,15 @@ export default function Page({ params }) {
   );
 
   useEffect(() => {
+    const lastScroll = window.localStorage.getItem('scrollPosition')
+    setLoading(true)
+    setTimeout(() => {
+      window.scrollTo({
+        top: lastScroll,
+      })
+      setLoading(false)
+    }, 100)
+   
     CategoryModel.getCategory(params.id, true).then((c) => {
       setCategory(c);
 
@@ -44,6 +54,11 @@ export default function Page({ params }) {
       }
     });
   }, []);
+
+const openEntry = (entry) => {
+  window.localStorage.setItem('scrollPosition', window.scrollY)
+setActiveEntry(entry)
+}
 
   const focusEntry = (entry) => {
     setActiveEntry(entry);
@@ -69,7 +84,7 @@ export default function Page({ params }) {
         url: "",
         image: "",
         category_id: category?.id,
-        // new: true,
+        new: true,
       };
       setEntries([
         ...entries.slice(0, entryIndex),
@@ -136,7 +151,7 @@ export default function Page({ params }) {
 
   return (
     <>
-      <div className="entriesWrapper" data-category={params.id}>
+      <div className={`entriesWrapper ${loading ? 'loading' : ''}`} data-category={params.id}>
         <div className="emoji">{category?.emoji}</div>
         <div className="header">
           <h1>{category?.name}</h1>
@@ -194,7 +209,7 @@ export default function Page({ params }) {
                   key={entry.id}
                   className="entry"
                   href={`/entry/${entry.id}`}
-                  onClick={() => setActiveEntry(entry)}
+                  onClick={() => openEntry(entry)}
                 >
                   <span className="image">
                     <img

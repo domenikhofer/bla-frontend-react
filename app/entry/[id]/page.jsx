@@ -72,7 +72,7 @@ export default function Page({ params }) {
           </div>
         </div>
         <div className="pageActions">
-          <Link href={`/category/${entry?.category?.id}`} className="button">
+          <Link href={`/category/${entry?.category_id}`} className="button">
             ⬅️
           </Link>
           <a href={entry?.url} target="_blank" className="button">

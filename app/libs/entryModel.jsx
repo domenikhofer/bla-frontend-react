@@ -5,8 +5,12 @@ const supabase = createClient(
 );
 
 export async function createEntries(entries) {
+  const entriesWithoutNewProp = entries.map(entry => {
+    delete entry.new;
+    return entry
+  })
   const response = await supabase.from('entries').delete().eq('category_id',entries[0].category_id )
-  const { error } = await supabase.from("entries").insert(entries);
+  const { error } = await supabase.from("entries").insert(entriesWithoutNewProp);
 }
 
 export async function addMovieTVShow(data) {

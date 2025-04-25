@@ -1,14 +1,25 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "next-view-transitions";
 import * as EntryModel from "../../../libs/entryModel";
+import * as CategoryModel from "../../../libs/categoryModel";
+
 import { useRouter } from "next/navigation";
 
 export default function Page({ params }) {
   const [movieTV, setMovieTV] = useState();
   const [searchResults, setSearchResults] = useState([]);
+  const [category, setCategory] = useState();
+  const [filteredEntries, setFilteredEntries] = useState([])
+
   const router = useRouter()
+
+  useEffect(() => {
+ CategoryModel.getCategory(params.categoryId, true).then((c) => {
+      setCategory(c);
+ })
+  }, [])
 
 
   const searchMovieTV = async (e) => {
@@ -22,11 +33,17 @@ export default function Page({ params }) {
 
   const createMediaEntry = async (e) => {
     e.preventDefault();
-    await EntryModel.addMovieTVShow(movieTV);
-      router.push(`/category/${params.categoryId}`);
+    console.log(movieTV)
+    // await EntryModel.addMovieTVShow(movieTV);
+    //   router.push(`/category/${params.categoryId}`);
   };
 
   const selectMovieTV = (entry) => {
+    const entries = category.entries.filter((el) => {
+      return el.url == `https://www.themoviedb.org/${entry.media_type}/${entry.id}`
+    })
+
+    setFilteredEntries(entries)
     setMovieTV({
       id: entry.id,
       image: entry.poster_path,
@@ -39,6 +56,13 @@ export default function Page({ params }) {
 
   return (
     <form onSubmit={(e) => createMediaEntry(e)} method="post">
+
+      <div className={`existingMedia ${filteredEntries.length ? 'visible' : ''}`}>
+      <div>
+    
+        Media already exists in DB!
+        </div>
+      </div>
       <h2>Add Entry</h2>
       <label>
         <div className="label">Enter Movie/TV Show and hit Enter</div>

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "next-view-transitions";
 import Image from "next/image";
-import { getCategories } from "../app/libs/categoryModel";
+import { getBackup, getCategories } from "../app/libs/categoryModel";
 import CategoryActions from "../app/components/CategoryActions";
 import plantTop from "/public/images/plantTop.png";
 import plantSide from "/public/images/plantSide.png";
@@ -19,24 +19,30 @@ import React from "react";
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNrenBueXp1ZHduZ25vcXhyZ3F1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUxMzA3NzUsImV4cCI6MjA2MDcwNjc3NX0.4GDl_iUjvlxgxXylCi1hSJ9vrB7nnMI2dB32n0TCeRA"
   );
 
-  // TODO: logout button + keep scrolling pos + switch all to supabase + only allow movies once + return error if already exists + update project + backup button
-  
-
-
 export default function Home() {
   const [categories, setCategories] = useState([]);
   const [editMode, setEditMode] = useState(false);
   const [showEditBtn, setShowEditBtn] = useState(false);
   const [session, setSession] = useState(null)
+  const [loading, setLoading] = useState(false)
+
+  const backup = () => {
+    getBackup().then((data) => {
+      const fileName = `backup-${new Date()}`
+      const jsonData = new Blob([JSON.stringify(data)], { type: 'application/json' });
+      const jsonURL = URL.createObjectURL(jsonData);
+      const link = document.createElement('a');
+      link.href = jsonURL;
+      link.download = `${fileName}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    })
+  }
 
 
   useEffect(() => {
-    getCategories().then((c) => {
-      setCategories(c);
-    });
-  }, []);
-
-  useEffect(() => {
+    setLoading(true)
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session)
     })
@@ -45,16 +51,22 @@ export default function Home() {
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session)
     })
+   
+      getCategories().then((c) => {
+        setCategories(c);
+      });
+  
+    setLoading(false)
     return () => subscription.unsubscribe()
   }, [])
 
   if (!session) {
-    return (<Auth supabaseClient={supabase} appearance={{ theme: ThemeSupa }} />)
+    return (<div className={`loginWrapper ${loading ? 'loading' : ''}`}><Auth supabaseClient={supabase} appearance={{ theme: ThemeSupa }} /></div>)
   }
   else {
   return (
     <>
-      <div className={`categoriesWrapper ${editMode ? "reorder" : ""}`}>
+      <div className={`categoriesWrapper ${editMode ? "reorder" : ""} ${loading ? 'loading' : ''}`}>
         {categories.map((category) => (
           <>
             <div
@@ -140,6 +152,9 @@ export default function Home() {
           <>
           {/* <Link className="button" href="https://domenik.ch/bla-backend/public/api/download-backup">💾</Link>
             <button>👋🏻</button> */}
+            <a className="button" onClick={backup}>
+            💾
+            </a>
             <Link className="button" href="/category/create">
               ➕
             </Link>

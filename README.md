@@ -38,7 +38,6 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 ## TODO:
 - More elaborate page transitions
 - Home screen
-- Login
 - Caching
 - Server Components? get Data once and keep in store?
 - Consistent Semicolons

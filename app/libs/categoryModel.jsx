@@ -27,6 +27,27 @@ export async function getCategories(){
   return data;
 }
 
+export async function getBackup(){
+  const { data } = await supabase
+    .from("categories")
+    .select(
+      `
+        id,
+        name ,
+        emoji,
+        category_type_id ,
+        order_column ,
+        created_at ,
+        updated_at ,
+        deleted_at,
+        entries(*)
+    `
+    )
+    .is("deleted_at", null)
+
+  return data;
+}
+
 export async function getCategory(
   id,
   withEntries
