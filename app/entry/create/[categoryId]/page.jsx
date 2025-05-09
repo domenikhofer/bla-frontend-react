@@ -33,9 +33,8 @@ export default function Page({ params }) {
 
   const createMediaEntry = async (e) => {
     e.preventDefault();
-    console.log(movieTV)
-    // await EntryModel.addMovieTVShow(movieTV);
-    //   router.push(`/category/${params.categoryId}`);
+    await EntryModel.addMovieTVShow(movieTV);
+      router.push(`/category/${params.categoryId}`);
   };
 
   const selectMovieTV = (entry) => {

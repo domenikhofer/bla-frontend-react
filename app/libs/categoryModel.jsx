@@ -72,6 +72,7 @@ export async function getCategory(
       .eq("id", id)
       .is("deleted_at", null)
       .is("entries.deleted_at", null)
+      .order("created_at", {referencedTable: 'entries', ascending: false})
 
     return data ? data[0] : [];
   } else {

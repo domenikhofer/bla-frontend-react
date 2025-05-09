@@ -212,11 +212,15 @@ setActiveEntry(entry)
                   onClick={() => openEntry(entry)}
                 >
                   <span className="image">
+                    {entry.image ? (
                     <img
                       src={`https://image.tmdb.org/t/p/w500/${entry.image}`}
                       alt=""
                       className={activeEntry?.id === entry.id ? "active" : ""}
                     />
+                  ) : (
+                    <div className="image noImage">{entry.value}</div>
+                  )}
                   </span>
                 </Link>
               ))}
