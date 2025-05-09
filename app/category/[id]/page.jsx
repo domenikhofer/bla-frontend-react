@@ -31,7 +31,7 @@ export default function Page({ params }) {
         top: lastScroll,
       })
       setLoading(false)
-    }, 100)
+    }, 200)
    
     CategoryModel.getCategory(params.id, true).then((c) => {
       setCategory(c);

@@ -19,6 +19,7 @@ export default function Page({ params }) {
  CategoryModel.getCategory(params.categoryId, true).then((c) => {
       setCategory(c);
  })
+ window.localStorage.setItem('scrollPosition', 0)
   }, [])
 
 
