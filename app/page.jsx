@@ -5,9 +5,9 @@ import { Link } from "next-view-transitions";
 import Image from "next/image";
 import { getBackup, getCategories } from "../app/libs/categoryModel";
 import CategoryActions from "../app/components/CategoryActions";
-import plantTop from "/public/images/plantTop.png";
-import plantSide from "/public/images/plantSide.png";
-import plantBottom from "/public/images/plantBottom.png";
+import plantTop from "../public/images/plantTop.png";
+import plantSide from "../public/images/plantSide.png";
+import plantBottom from "../public/images/plantBottom.png";
 import { TransitionGroup, CSSTransition } from "react-transition-group";
 import { createClient } from '@supabase/supabase-js'
   import { Auth } from '@supabase/auth-ui-react'
