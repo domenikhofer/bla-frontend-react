@@ -1,7 +1,7 @@
 "use client";
 
 import { Link } from "next-view-transitions";
-import { useRef, useEffect, useState, useCallback, useMemo } from "react";
+import { useRef, useEffect, useState, useCallback, useMemo, use } from "react";
 import * as CategoryModel from "../../libs/categoryModel";
 import * as EntryModel from "../../libs/entryModel";
 import { useSearchParams } from "next/navigation";
@@ -20,45 +20,48 @@ export default function Page({ params }) {
   const lastEntryId = searchParams.get("backFrom");
   const isDirty = useMemo(
     () => JSON.stringify(initialEntries) != JSON.stringify(entries),
-    [initialEntries, entries]
+    [initialEntries, entries],
   );
+    const { id } = use(params)
+
 
   useEffect(() => {
-    const lastScroll = window.localStorage.getItem('scrollPosition')
-    setLoading(true)
+    const lastScroll = window.localStorage.getItem("scrollPosition");
+    setLoading(true);
     setTimeout(() => {
       window.scrollTo({
         top: lastScroll,
-      })
-      setLoading(false)
-    }, 200)
-   
-    CategoryModel.getCategory(params.id, true).then((c) => {
-      setCategory(c);
+      });
+      setLoading(false);
+    }, 200);
 
-      if (c.entries && c.entries.length > 0) {
-        setEntries(c.entries);
-        setInitialEntries(JSON.parse(JSON.stringify(c.entries)));
-      } else {
-        const template = [
-          {
-            value: "First Entry",
-            id: new Date().getTime(),
-            url: "",
-            image: "",
-            category_id: c.id,
-          },
-        ];
-        setEntries(template);
-        setInitialEntries(JSON.parse(JSON.stringify(template)));
-      }
-    });
+  
+      CategoryModel.getCategory(id, true).then((c) => {
+        setCategory(c);
+
+        if (c.entries && c.entries.length > 0) {
+          setEntries(c.entries);
+          setInitialEntries(JSON.parse(JSON.stringify(c.entries)));
+        } else {
+          const template = [
+            {
+              value: "First Entry",
+              id: new Date().getTime(),
+              url: "",
+              image: "",
+              category_id: c.id,
+            },
+          ];
+          setEntries(template);
+          setInitialEntries(JSON.parse(JSON.stringify(template)));
+        }
+      });
   }, []);
 
-const openEntry = (entry) => {
-  window.localStorage.setItem('scrollPosition', window.scrollY)
-setActiveEntry(entry)
-}
+  const openEntry = (entry) => {
+    window.localStorage.setItem("scrollPosition", window.scrollY);
+    setActiveEntry(entry);
+  };
 
   const focusEntry = (entry) => {
     setActiveEntry(entry);
@@ -103,11 +106,11 @@ setActiveEntry(entry)
       let entryRef;
       if (entryIndex == 0) {
         entryRef = entryRefs.current.find(
-          (e) => e?.dataset.id == entries[entryIndex + 1].id
+          (e) => e?.dataset.id == entries[entryIndex + 1].id,
         );
       } else {
         entryRef = entryRefs.current.find(
-          (e) => e?.dataset.id == entries[entryIndex - 1].id
+          (e) => e?.dataset.id == entries[entryIndex - 1].id,
         );
       }
       entryRef.click();
@@ -129,8 +132,8 @@ setActiveEntry(entry)
   };
 
   const isMarkup = (entry) => {
-    if(entry.value?.startsWith("#")) return "bold"
-    return ""
+    if (entry.value?.startsWith("#")) return "bold";
+    return "";
   };
 
   const findSimilarEntries = async (query) => {
@@ -145,13 +148,16 @@ setActiveEntry(entry)
   const webSearch = () => {
     window.open(
       "https://www.google.com/search?q=" + activeEntry?.value.trim(),
-      "_blank"
+      "_blank",
     );
   };
 
   return (
     <>
-      <div className={`entriesWrapper ${loading ? 'loading' : ''}`} data-category={params.id}>
+      <div
+        className={`entriesWrapper ${loading ? "loading" : ""}`}
+        data-category={id}
+      >
         <div className="emoji">{category?.emoji}</div>
         <div className="header">
           <h1>{category?.name}</h1>
@@ -169,9 +175,7 @@ setActiveEntry(entry)
                   className={`title ${isMarkup(entry)}`}
                   data-new={entry.new}
                   data-id={entry.id}
-                  onKeyUp={(e) =>
-                    findSimilarEntries((e.target).value)
-                  }
+                  onKeyUp={(e) => findSimilarEntries(e.target.value)}
                   onKeyDown={(e) => manipulateEntry(e, entry)}
                   onClick={() => focusEntry(entry)}
                   spellCheck="false"
@@ -213,14 +217,14 @@ setActiveEntry(entry)
                 >
                   <span className="image">
                     {entry.image ? (
-                    <img
-                      src={`https://image.tmdb.org/t/p/w500/${entry.image}`}
-                      alt=""
-                      className={activeEntry?.id === entry.id ? "active" : ""}
-                    />
-                  ) : (
-                    <div className="image noImage">{entry.value}</div>
-                  )}
+                      <img
+                        src={`https://image.tmdb.org/t/p/w500/${entry.image}`}
+                        alt=""
+                        className={activeEntry?.id === entry.id ? "active" : ""}
+                      />
+                    ) : (
+                      <div className="image noImage">{entry.value}</div>
+                    )}
                   </span>
                 </Link>
               ))}

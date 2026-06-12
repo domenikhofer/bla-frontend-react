@@ -1,7 +1,7 @@
 "use client";
 
 import { Link } from "next-view-transitions";
-import { useEffect, useState } from "react";
+import { useEffect, useState, use } from "react";
 import * as EntryModel from "../../libs/entryModel";
 import { CSSTransition } from 'react-transition-group'
 import Modal from '../../components/Modal'
@@ -13,11 +13,12 @@ export default function Page({ params }) {
   const [deletionState, setDeletionState] = useState("");
   const [showModal, setShowModal] = useState(false);
   const router = useRouter()
+    const { id } = use(params)
 
 
 
   useEffect(() => {
-      EntryModel.getEntry(params.id).then((e) => {
+      EntryModel.getEntry(id).then((e) => {
         setEntry(e);
       })
   }, []);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, use } from "react";
 import { Link } from "next-view-transitions";
 import * as EntryModel from "../../../libs/entryModel";
 import * as CategoryModel from "../../../libs/categoryModel";
@@ -14,9 +14,11 @@ export default function Page({ params }) {
   const [filteredEntries, setFilteredEntries] = useState([])
 
   const router = useRouter()
+      const { categoryId } = use(params)
+
 
   useEffect(() => {
- CategoryModel.getCategory(params.categoryId, true).then((c) => {
+ CategoryModel.getCategory(categoryId, true).then((c) => {
       setCategory(c);
  })
  window.localStorage.setItem('scrollPosition', 0)
@@ -35,7 +37,7 @@ export default function Page({ params }) {
   const createMediaEntry = async (e) => {
     e.preventDefault();
     await EntryModel.addMovieTVShow(movieTV);
-      router.push(`/category/${params.categoryId}`);
+      router.push(`/category/${categoryId}`);
   };
 
   const selectMovieTV = (entry) => {
@@ -50,7 +52,7 @@ export default function Page({ params }) {
       url: `https://www.themoviedb.org/${entry.media_type}/${entry.id}`,
       value: entry.name || entry.title,
       // isDone: false,
-      category_id: params.categoryId,
+      category_id: categoryId,
     });
   };
 
@@ -99,7 +101,7 @@ export default function Page({ params }) {
       
       <div className="formActions fixed">
         {movieTV?.id ? <button type="submit">✔️</button> : null}
-        <Link href={`/category/${params.categoryId}`} className="button">
+        <Link href={`/category/${categoryId}`} className="button">
           ✖️
         </Link>
       </div>
