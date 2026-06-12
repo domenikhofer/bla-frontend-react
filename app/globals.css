@@ -159,7 +159,7 @@ select {
   transition: var(--transition);
   text-align: center;
 
-  &.enter-done {
+  &.open {
     opacity: 1;
     pointer-events: all;
   }

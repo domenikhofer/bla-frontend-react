@@ -1,6 +1,5 @@
 import { Link } from "next-view-transitions";
 import { useState } from 'react'
-import { CSSTransition } from 'react-transition-group'
 import Modal from '../components/Modal'
 import * as CategoryModel from '../libs/categoryModel'
 
@@ -27,13 +26,9 @@ export default function CategoryActions(props) {
                 <Link href={`/category/edit/${props.category.id}`} className="button">✏️</Link>
                 <div className={`button ${props.category.subcategories != null && props.category.subcategories.length != 0 ? 'invisible' : ''}`} onClick={openModal}>🗑️</div>
             </div >
-            <CSSTransition
-                in={showModal}
-                timeout={200}
-                unmountOnExit
-            >
-                <Modal onClose={() => setShowModal(false)} onDelete={() => deleteCategory()} itemName={props.category.name} type="category"  />
-            </CSSTransition>
+           
+                <Modal open={showModal} onClose={() => setShowModal(false)} onDelete={() => deleteCategory()} itemName={props.category.name} type="category"  />
+           
 
         </>
     )
